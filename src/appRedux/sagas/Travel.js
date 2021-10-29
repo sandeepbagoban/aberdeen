@@ -1,7 +1,7 @@
 import {all, call, fork, put, takeEvery} from "redux-saga/effects";
 import {axiosInstance} from '../../axios/axios'
-import {CREATE_TRAVEL, LOAD_TRAVEL, LOAD_TRAVEL_CALENDAR} from '../types/Travel'
-import {createTravelSuccess, loadTravelSuccess, loadTravelCalendarSuccess} from '../actions/Travel';
+import {CREATE_TRAVEL, LOAD_TRAVEL, LOAD_TRAVEL_CALENDAR, DELETE_TRAVEL} from '../types/Travel'
+import {createTravelSuccess, loadTravelSuccess, loadTravelCalendarSuccess, deleteTravelSuccess} from '../actions/Travel';
 
 
 // API REQUEST
@@ -74,6 +74,43 @@ export function* createTravel({createTravels}) {
     }
 }
 
+const deleteTravelRequest = async (travelid) =>
+  await axiosInstance.post('/api/travel/delete?travelid=' + travelid)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      return error.response;
+    });
+
+export function* deleteTravel({id}){
+  try { 
+      const response = yield call(deleteTravelRequest, id);
+      if (response.status === 200) {
+        yield put(deleteTravelSuccess(response.data)); 
+        console.log(response.data)
+        // if (response.data){
+        //   notification['success']({
+        //     message: 'Travel Deleted Successfully'
+        //   });
+        // } 
+        // else {
+        //   notification['error']({
+        //     message: 'Cannot Delete Travel',
+        //     description: 'Please note that there are evaluation results entered for this period!!'
+        //   });
+        // }
+
+      }     
+    } catch (error) {
+      // notification['success']({
+      //   message: 'Error deleting period'
+      // });
+      console.log(error);
+    }
+}
+
+
 export function* loadTravels() {
     yield takeEvery(LOAD_TRAVEL, getTravels);
 }
@@ -86,11 +123,17 @@ export function* loadTravelsCalendar() {
   yield takeEvery(LOAD_TRAVEL_CALENDAR, getTravelsCalendar);
 }
 
+export function* deleteTravels() {
+  yield takeEvery(DELETE_TRAVEL, deleteTravel);
+}
+
+
 export default function* rootSaga() {
   yield all([
     fork(loadTravels),
     fork(create_travel), 
-    fork(loadTravelsCalendar)
+    fork(loadTravelsCalendar),
+    fork(deleteTravels)
   ]);
 }
   

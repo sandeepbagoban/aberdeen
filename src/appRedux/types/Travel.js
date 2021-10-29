@@ -6,3 +6,6 @@ export const CREATE_TRAVEL_SUCCESS = '[Travel] Travel created successfully';
 
 export const LOAD_TRAVEL_CALENDAR = '[Travel] Load Travel Calendar';
 export const LOAD_TRAVEL_CALENDAR_SUCCESS = '[Travel] Travel Calendar loaded successfully';
+
+export const DELETE_TRAVEL = '[Travel] Delete Travel';
+export const DELETE_TRAVEL_SUCCESS = '[Travel] Travel Deleted successfully';

@@ -1,12 +1,13 @@
 import React, { useState,useEffect } from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import { loadCompanies, loadEmployees } from '../../appRedux/actions';
+import { loadCompanies, loadEmployees, deleteTravel } from '../../appRedux/actions';
 import {loadTravel} from '../../appRedux/actions/Travel';
 import DatePicker from 'react-date-picker'
 import { Col, Row, Container, Button } from "react-bootstrap";
 import "react-datepicker/dist/react-datepicker.css";
 import Datatable from '../actions/Datatable';
 import Table from "react-tailwind-table";
+import Dialog from 'react-bootstrap-dialog'
 
 const VoyageGrid = ({ props }) => {
   const dispatch = useDispatch();
@@ -25,14 +26,15 @@ const VoyageGrid = ({ props }) => {
 	})
 
   const { travel }= useSelector(travel => travel);
-  const { added }= useSelector( ({travel}) => travel);
+  const { added,deleted }= useSelector( ({travel}) => travel);
   const employees = useSelector(({select}) => select.employees);
 	const companies = useSelector(({select}) => select.companies);
+  var dialog;
 
   useEffect(() => {
     console.log(page,'page is:')
     dispatch(loadTravel(page));
-  }, [dispatch,added]);
+  }, [dispatch,added,deleted]);
 
   useEffect(() => {
     dispatch(loadEmployees());
@@ -131,19 +133,21 @@ const VoyageGrid = ({ props }) => {
               />
             </svg>
           </button>
-          {/* <button
+
+          <button
             className="btn-viewmore btn bg-white border-gray-200 hover:border-red-300 text-gray-500 hover:text-gray-600"
             aria-haspopup="true"
-            onClick={(e) => console.log(e)}
+            onClick={e => delete_Travel(e,row)}
           >
             <svg xmlns="http://www.w3.org/2000/svg"
+             width="16" height="20"
              fill="currentColor"
              class="bi bi-archive"
              viewBox="0 0 16 16">
             <path
              d="M0 2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v7.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 12.5V5a1 1 0 0 1-1-1V2zm2 3v7.5A1.5 1.5 0 0 0 3.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5H2zm13-3H1v2h14V2zM5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"/>
             </svg>
-          </button> */}
+          </button>
         </>
       );
     }
@@ -188,6 +192,29 @@ const VoyageGrid = ({ props }) => {
     page.enddate = null;
     dispatch(loadTravel(page));
   }
+
+  // const delete_Travel = (e, row) => {
+  //   {this.onClickOkCancelWithHandler}
+  //   // dispatch(deleteTravel(row.TravelId));
+  // }
+
+  const delete_Travel = (e, row) => {
+    dialog.show({
+      body: 'Are you sure to delete this travel entry?',
+      actions: [
+        Dialog.CancelAction(() => {
+          console.log('cancel button clicked')
+          //action('cancel button was clicked!')()
+        }),
+        Dialog.OKAction(() => {
+          console.log('ok button clicked')
+          dispatch(deleteTravel(row.TravelId));
+          //action('ok button was clicked!')()
+        })
+      ]
+    })
+  }
+
 
   return (
     <>
@@ -268,6 +295,7 @@ const VoyageGrid = ({ props }) => {
           table_header="Voyage Table"
           row_render={rowcheck}
         />
+        <Dialog ref={(el) => { dialog = el }} />
       </div>
     </>
   );
