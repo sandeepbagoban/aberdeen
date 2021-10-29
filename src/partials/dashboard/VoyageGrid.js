@@ -6,6 +6,7 @@ import DatePicker from 'react-date-picker'
 import { Col, Row, Container, Button } from "react-bootstrap";
 import "react-datepicker/dist/react-datepicker.css";
 import Datatable from '../actions/Datatable';
+import Table from "react-tailwind-table";
 
 const VoyageGrid = ({ props }) => {
   const dispatch = useDispatch();
@@ -38,9 +39,7 @@ const VoyageGrid = ({ props }) => {
     dispatch(loadCompanies());
   }, [dispatch,added]);
 
-  // const { travel }= useSelector(travel => travel);
-  // const employees = useSelector(({select}) => select.employees);
-	// const companies = useSelector(({select}) => select.companies);
+
 
   const column = () => {
     return [
@@ -132,6 +131,19 @@ const VoyageGrid = ({ props }) => {
               />
             </svg>
           </button>
+          {/* <button
+            className="btn-viewmore btn bg-white border-gray-200 hover:border-red-300 text-gray-500 hover:text-gray-600"
+            aria-haspopup="true"
+            onClick={(e) => console.log(e)}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg"
+             fill="currentColor"
+             class="bi bi-archive"
+             viewBox="0 0 16 16">
+            <path
+             d="M0 2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v7.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 12.5V5a1 1 0 0 1-1-1V2zm2 3v7.5A1.5 1.5 0 0 0 3.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5H2zm13-3H1v2h14V2zM5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"/>
+            </svg>
+          </button> */}
         </>
       );
     }
@@ -226,9 +238,8 @@ const VoyageGrid = ({ props }) => {
             </Col>
           </Row>
 
-            <Row>
-              <Col xs={12} md={12} className="py-4">
-                
+          <Row>
+          <Col xs={12} md={12} className="py-4">     
           <div className="action-buttons">
               <Button
                 variant="primary"
@@ -242,18 +253,23 @@ const VoyageGrid = ({ props }) => {
                 Clear Filters
               </Button>  
           </div>
-              </Col>
-            </Row>      
-          <Row>
+          </Col>
+          </Row>      
+          {/* <Row>
             <Col xs={12} md={12}>
               <Datatable/>
             </Col>
-          </Row>
+          </Row> */}
         </Container>
-
+        <Table
+          columns={state.columns}
+          rows={travel.travels.Items}
+          per_page={10}
+          table_header="Voyage Table"
+          row_render={rowcheck}
+        />
       </div>
     </>
   );
 };
-
 export default VoyageGrid;
