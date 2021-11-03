@@ -1,9 +1,9 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect,useRef } from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import { loadCompanies, loadEmployees, deleteTravel } from '../../appRedux/actions';
 import {loadTravel} from '../../appRedux/actions/Travel';
 import DatePicker from 'react-date-picker'
-import { Col, Row, Container, Button } from "react-bootstrap";
+import { Col, Row, Container, Button, Form } from "react-bootstrap";
 import "react-datepicker/dist/react-datepicker.css";
 import Datatable from '../actions/Datatable';
 import Table from "react-tailwind-table";
@@ -30,6 +30,7 @@ const VoyageGrid = ({ props }) => {
   const employees = useSelector(({select}) => select.employees);
 	const companies = useSelector(({select}) => select.companies);
   var dialog;
+  const formRef = useRef(null);
 
   useEffect(() => {
     console.log(page,'page is:')
@@ -140,14 +141,26 @@ const VoyageGrid = ({ props }) => {
             onClick={e => delete_Travel(e,row)}
           >
             <svg xmlns="http://www.w3.org/2000/svg"
-             width="16" height="20"
-             fill="currentColor"
-             class="bi bi-archive"
-             viewBox="0 0 16 16">
-            <path
-             d="M0 2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v7.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 12.5V5a1 1 0 0 1-1-1V2zm2 3v7.5A1.5 1.5 0 0 0 3.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5H2zm13-3H1v2h14V2zM5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"/>
+             width="16" height="20" fill="currentColor"
+             class="bi bi-trash" viewBox="0 0 16 16">
+              <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+              <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
             </svg>
           </button>
+
+          <button
+            className="btn-viewmore btn bg-white border-gray-200 hover:border-red-300 text-gray-500 hover:text-gray-600"
+            aria-haspopup="true"
+            onClick={e => update_Travel(e,row)}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg"
+             width="16" height="20" fill="currentColor"
+             class="bi bi-pencil-square" viewBox="0 0 16 16">
+              <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+              <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+            </svg>
+          </button>
+
         </>
       );
     }
@@ -184,6 +197,7 @@ const VoyageGrid = ({ props }) => {
   }
 
   const handleClickClearFilters = () => {
+    formRef.current.reset();
     page.companyid = -1;
     page.employeeid = -1;
     onChangeStartDate(null);
@@ -215,15 +229,20 @@ const VoyageGrid = ({ props }) => {
     })
   }
 
+  const update_Travel = (e, row) => {
+    console.log('updating travel!!!')
+  }
+
 
   return (
     <>
       <div className="grid grid-cols bg-white shadow-lg rounded-xl border border-gray-200 px-5 py-4 border-b border-gray-100">
         <Container>
           {/* Row 1 */}
+          <Form ref={formRef}>
           <Row>
             <Col xs={6} md={6}>
-              <label className="block mb-2">
+              {/* <label className="block mb-2">
                 <span className="text-gray-300 title">Company</span>
                 <select className="form-select block w-full" onChange={e => onChange(e,'company')}>
                 <option key="-1" value="-1">---SELECT ALL COMPANIES---</option>
@@ -231,10 +250,17 @@ const VoyageGrid = ({ props }) => {
                   return <option key={company.id} value={company.id}>{company.text}</option>
                   })}
                 </select>
-              </label>
+              </label> */}
+              <span className="text-gray-300 title">Company</span>
+              <Form.Select aria-label="Default select example" onChange={e => onChange(e,'company')}>
+                <option key="-1" value="-1">---SELECT ALL COMPANIES---</option>
+                {companies.map ((company) =>{
+                  return <option key={company.id} value={company.id}>{company.text}</option>
+                  })}
+              </Form.Select>
             </Col>
             <Col xs={6} md={6}>
-              <label className="block mb-2">
+              {/* <label className="block mb-2">
                 <span className="text-gray-300 title">Employee</span>
                 <select className="form-select block w-full" onChange={e => onChange(e,'employee')}>
                 <option key="-1" value="-1">---SELECT ALL EMPLOYEES---</option>
@@ -242,7 +268,14 @@ const VoyageGrid = ({ props }) => {
                   return <option key={employee.id} value={employee.id}>{employee.text}</option>
                   })}
                 </select>
-              </label>
+              </label> */}
+              <span className="text-gray-300 title">Employee</span>
+              <Form.Select aria-label="Default select example" onChange={e => onChange(e,'employee')}>
+                <option key="-1" value="-1">---SELECT ALL EMPLOYEES---</option>
+                  {employees.map ((employee) =>{
+                  return <option key={employee.id} value={employee.id}>{employee.text}</option>
+                  })}
+              </Form.Select>
             </Col>
             <Col xs={6} md={6}>
             <span className="text-gray-300 title">Start Date</span>
@@ -281,7 +314,12 @@ const VoyageGrid = ({ props }) => {
               </Button>  
           </div>
           </Col>
-          </Row>      
+          </Row> 
+
+          </Form>
+          
+
+     
           {/* <Row>
             <Col xs={12} md={12}>
               <Datatable/>
@@ -295,6 +333,7 @@ const VoyageGrid = ({ props }) => {
           table_header="Voyage Table"
           row_render={rowcheck}
         />
+        
         <Dialog ref={(el) => { dialog = el }} />
       </div>
     </>

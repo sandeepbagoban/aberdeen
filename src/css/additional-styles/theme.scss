@@ -59,7 +59,7 @@ img.logoImage {
     font-size: 11px;
 }
 
-span.title {
+.title {
   font-size: 10px;
 }
 
@@ -167,4 +167,8 @@ a {
 
 .react-date-picker__calendar.react-date-picker__calendar--open {
   box-shadow: 0px 0px 24px #8f8f8f
+}
+
+.input-feedback {
+  color: #c34949 ;
 }

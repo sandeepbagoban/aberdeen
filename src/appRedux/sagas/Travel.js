@@ -62,10 +62,13 @@ export function* createTravel({createTravels}) {
   try {
       const response = yield call(createTravelRequest, createTravels);
       if (response.status === 200) {
-        yield put(createTravelSuccess(response.data)); 
+
+        console.log(response,'response is:::')
         if (response.data) {
-          // alert('Created');
+          yield put(createTravelSuccess(response.data)); 
+          console.log('created')
         } else {
+          console.log('error')
           // alert('Error');
         }
       }     

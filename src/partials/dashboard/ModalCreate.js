@@ -6,8 +6,10 @@ import { Card, Button } from "tailwind-react-ui";
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { createTravel } from "../../appRedux/actions/Travel.js";
-import { Col, Row, Container, Modal } from "react-bootstrap";
+import { Col, Row, Container, Modal, Form } from "react-bootstrap";
 import { loadCompanies, loadEmployees } from '../../appRedux/actions';
+import { Formik } from "formik";
+import * as yup from "yup";
 
 const ModalCreate = (props) => {
   const [createOpen, setSearchOpen] = useState(false);
@@ -18,6 +20,7 @@ const ModalCreate = (props) => {
   const cancelButtonRef = useRef(null);
 
 	const companies = useSelector(({select}) => select.companies);
+  const { added }= useSelector( ({travel}) => travel);
   const [purposeState, setPurposeState] = useState('');
   const [companyId, setCompanyId] = useState();
   const [travelDetails, setTravelDetails] = useState([
@@ -33,6 +36,12 @@ const ModalCreate = (props) => {
     dispatch(loadEmployees());
     dispatch(loadCompanies());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (added){
+      setShow(false);
+    }
+  }, [added]);
 
   const [show, setShow] = useState(false);
 
@@ -63,27 +72,38 @@ const ModalCreate = (props) => {
 
   
   function onChange(value, name) {
+    console.log('chanigng company')
     if (name.toString() === 'company'){
-      // console.log(value.target.value,'on changing company')
       setCompanyId(value.target.value);
     }
   }
 
-  const handleSubmit = () => {
+  const initialValues = {
+    company: "",
+    purpose: ""
+  };
+
+
+  const schema = yup.object().shape({
+    company: yup.string().required("Please select a company!"),
+    purpose: yup.string().required("Please enter purpose of travel!")
+  })
+
+  const handlerSubmitApi = () => {
+    console.log('handling submit!!!')
     const value =  {
-          "Purpose": purposeState,
-          "Company": {
-              "CompanyId": companyId
-          },
-          "Employee": {
-              "EmployeeId": 46
-          },
-          "TravelEntries": travelDetails
-      }
-      console.log('value', value);
-      dispatch(createTravel(value));
-      setShow(false);
+      "Purpose": purposeState,
+      "Company": {
+          "CompanyId": companyId
+      },
+      "Employee": {
+          "EmployeeId": 46
+      },
+      "TravelEntries": travelDetails
   }
+    dispatch(createTravel(value));
+  }
+
 
   return (
     <div>
@@ -99,9 +119,15 @@ const ModalCreate = (props) => {
         onHide={handleClose}
         backdrop="static"
         keyboard={false}>
+        <Formik validationSchema={schema} initialValues={initialValues}>
+        {({
+        handleChange,handleBlur,values,touched,dirty,isValid,errors
+      }) => (
 
+        <Form noValidate>
         <Modal.Header closeButton>
-          <Modal.Title>Add Travelling</Modal.Title>
+          <Modal.Title>Add Travelling
+          </Modal.Title>
         </Modal.Header>
 
         <Modal.Body >
@@ -109,23 +135,27 @@ const ModalCreate = (props) => {
             {/* Row 1 */}
             <Row>
               <Col xs={6} md={6}>
-                  <label className="block mb-2">
-                    <span className="text-gray-300 title">Company</span>
-                    <select className="form-select block w-full" onChange={e => onChange(e,'company')} required>
-                    <option key="-1" value="-1">---SELECT ALL COMPANIES---</option>
+              <Form.Group controlId="validationFormikCompany">
+                    <Form.Label className="text-gray-300 title">Company</Form.Label>
+                    <Form.Control name="company" as="select" placeholder="Select Company" isInvalid={touched.company && !!errors.company} onBlur={handleBlur} onChange = { e => {onChange(e,'company'); handleChange(e)}} value={values.company}>
+                    <option defaultValue>Select Company</option>
                     {companies.map ((company) =>{
                       return <option key={company.id} value={company.id}>{company.text}</option>
                       })}
-                    </select>
-                  </label>
+                    </Form.Control>
+                    <Form.Control.Feedback type="invalid">{errors.company}</Form.Control.Feedback>
+              </Form.Group>
               </Col>
+
+
               <Col xs={6} md={6}>
-                  <span className="text-gray-300 title">Purpose of Travel</span>
-                  <input
-                    onChange={event => setPurposeState(event.target.value)}
-                    className="form-input block w-full"
-                    placeholder="Purpose of Travel"/>
+              <Form.Group controlId="validationFormikPurpose">
+                    <Form.Label className="text-gray-300 title">Purpose of Travel</Form.Label>
+                    <Form.Control name="purpose"  type="text" placeholder="Purpose of Travel" isInvalid={touched.purpose && !!errors.purpose} onBlur={handleBlur} onChange={event => {setPurposeState(event.target.value); handleChange(event)}} value={values.purpose}/>
+                    <Form.Control.Feedback type="invalid">{errors.purpose}</Form.Control.Feedback>
+              </Form.Group>
               </Col>
+
             </Row>
 
             {/* Row 2 */}
@@ -136,6 +166,7 @@ const ModalCreate = (props) => {
               <Col xs={6} md={6} className="autoscroll">
                   {travelDetails && travelDetails.map((travelDetail, index) => (
                       <>
+                      {console.log(index,'index!!!')}
                         <div key={index} className="selectedDate">
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -147,24 +178,41 @@ const ModalCreate = (props) => {
                         </div>
                         <textarea className="resize-none rounded-md areadesc"
                           onKeyUp={e => onKeyUpChange(e.target.value, travelDetail.TravelId)}></textarea>
-                        <span className="btnremove" onClick={() => remSection(travelDetail.Date)}>
+                        {travelDetails.length > 1 && <span className="btnremove" onClick={() => remSection(travelDetail.Date)}>
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                           </svg>
-                        </span>
+                        </span>}
                       </>
                   ))}
               </Col>
             </Row>
+            
           </Container>
         </Modal.Body>
         <Modal.Footer>
-          <Button className="btn bg-red-500 hover:bg-red-600 text-white" onClick={handleSubmit}>Create Travelling</Button>
+          <Button className="btn bg-red-500 hover:bg-red-600 text-white" onClick={handlerSubmitApi} disabled={!(dirty && isValid)}>Create Travelling</Button>
         </Modal.Footer>
+        </Form>
+        )}
+        </Formik>
       </Modal>
     </div>
   );
 };
 
 export default ModalCreate;
+
+
+
+
+
+
+
+
+
+
+
+
+
 
