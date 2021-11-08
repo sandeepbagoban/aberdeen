@@ -40,6 +40,7 @@ const ModalCreate = ({show,setvisiblechild,dataFromParent}) => {
   const [visible, setVisible] = useState(false);
 
   const handleVisible = () => {
+    dataFromParent = undefined;
     setVisible(true)
   }
 
@@ -79,16 +80,13 @@ const ModalCreate = ({show,setvisiblechild,dataFromParent}) => {
 
 
 
-  const remSection = (date) => {
+  const remSection = (travelEntryId) => {
     const value  = [...travelDetails];
-    value.splice(value.findIndex(value => value.Date===date), 1);
+    value.splice(value.findIndex(value => value.TravelEntryId===travelEntryId), 1);
     setTravelDetails(value);
   }
 
   const onKeyUpChange = (value, TravelEntryId) => {
-    console.log('value:',value)
-    console.log('travel entry id:', TravelEntryId)
-    console.log(travelDetails,'travel details')
     travelDetails.find(x => x.TravelEntryId === TravelEntryId).Description = value;
   }
 
@@ -117,7 +115,7 @@ const ModalCreate = ({show,setvisiblechild,dataFromParent}) => {
         value.push({
           TravelEntryId: x.TravelEntryId,
           TravelId: dataFromParent.TravelId,
-          Date: new Date(x.Date),
+          Date: localToUtc(new Date(x.Date)),
           Description: x.Description,
         });
       });
@@ -156,6 +154,7 @@ const ModalCreate = ({show,setvisiblechild,dataFromParent}) => {
     }
 
   }
+
 
 
   return (
@@ -229,9 +228,14 @@ const ModalCreate = ({show,setvisiblechild,dataFromParent}) => {
                           {new Intl.DateTimeFormat(['ban', 'id']).format(travelDetail.Date)}
                           {/* {formatDate(travelDetail.Date)} */}
                         </div>
+                        {console.log(travelDetail,'travel detail')}
+                        {console.log(travelDetail.Description,'travel detail description')}
                         <textarea className="resize-none rounded-md areadesc"
-                          onKeyUp={e => onKeyUpChange(e.target.value, travelDetail.TravelEntryId)}>{travelDetail.Description}</textarea>
-                        {travelDetails.length > 1 && <span className="btnremove" onClick={() => remSection(travelDetail.Date)}>
+                        key={travelDetail.TravelEntryId}
+                        onKeyUp={e => onKeyUpChange(e.target.value, travelDetail.TravelEntryId)}
+                        defaultValue={travelDetail.Description}
+                        ></textarea>
+                        {travelDetails.length > 1 && <span className="btnremove" onClick={() => remSection(travelDetail.TravelEntryId)}>
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                           </svg>
