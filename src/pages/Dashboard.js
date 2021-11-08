@@ -4,7 +4,6 @@ import Header from '../partials/Header';
 import FilterButton from '../partials/actions/FilterButton';
 import BigCalendar from '../partials/dashboard/Calendar';
 import VoyageGrid from '../partials/dashboard/VoyageGrid';
-import Test from '../partials/dashboard/test';
 import ModalCreate from '../partials/dashboard/ModalCreate';
 import {useDispatch, useSelector} from "react-redux";
 import {loadTravel, loadTravelCalendar} from '../appRedux/actions/Travel';
@@ -71,7 +70,6 @@ function Dashboard() {
             {/* Cards */}           
             { showHideCalendarState.calendar ? <BigCalendar />  : null }
             { showHideCalendarState.grid ? <VoyageGrid />  : null }
-            <Test/>
           </div>
         </main>
       </div>
