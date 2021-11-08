@@ -1,7 +1,7 @@
 import {all, call, fork, put, takeEvery} from "redux-saga/effects";
 import {axiosInstance} from '../../axios/axios'
-import {CREATE_TRAVEL, LOAD_TRAVEL, LOAD_TRAVEL_CALENDAR, DELETE_TRAVEL} from '../types/Travel'
-import {createTravelSuccess, loadTravelSuccess, loadTravelCalendarSuccess, deleteTravelSuccess} from '../actions/Travel';
+import {CREATE_TRAVEL, LOAD_TRAVEL, LOAD_TRAVEL_CALENDAR, DELETE_TRAVEL, UPDATE_TRAVEL} from '../types/Travel'
+import {createTravelSuccess, loadTravelSuccess, loadTravelCalendarSuccess, deleteTravelSuccess, updateTravelSuccess} from '../actions/Travel';
 
 
 // API REQUEST
@@ -33,6 +33,16 @@ const createTravelRequest = async (travels) =>
     .catch(function (error) {
       return error.response;
 });
+
+const updateTravelRequest = async (travels) =>
+  await axiosInstance.post('/api/Travel/Update', travels)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      return error.response;
+});
+
 
 // CHECK RESPONSE
 export function* getTravels({companyid, employeeid, startdate, enddate, order, column, currentpage, count}){
@@ -66,6 +76,25 @@ export function* createTravel({createTravels}) {
         console.log(response,'response is:::')
         if (response.data) {
           yield put(createTravelSuccess(response.data)); 
+          console.log('created')
+        } else {
+          console.log('error')
+          // alert('Error');
+        }
+      }     
+    } catch (error) {
+      alert('Error');
+    }
+}
+
+export function* updateTravel({updateTravels}) {
+  try {
+      const response = yield call(updateTravelRequest, updateTravels);
+      if (response.status === 200) {
+
+        console.log(response,'response is:::')
+        if (response.data) {
+          yield put(updateTravelSuccess(response.data)); 
           console.log('created')
         } else {
           console.log('error')
@@ -130,13 +159,18 @@ export function* deleteTravels() {
   yield takeEvery(DELETE_TRAVEL, deleteTravel);
 }
 
+export function* update_travel() {
+  yield takeEvery(UPDATE_TRAVEL, updateTravel);
+}
+
 
 export default function* rootSaga() {
   yield all([
     fork(loadTravels),
     fork(create_travel), 
     fork(loadTravelsCalendar),
-    fork(deleteTravels)
+    fork(deleteTravels),
+    fork(update_travel), 
   ]);
 }
   

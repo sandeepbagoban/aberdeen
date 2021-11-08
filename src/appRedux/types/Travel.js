@@ -9,3 +9,6 @@ export const LOAD_TRAVEL_CALENDAR_SUCCESS = '[Travel] Travel Calendar loaded suc
 
 export const DELETE_TRAVEL = '[Travel] Delete Travel';
 export const DELETE_TRAVEL_SUCCESS = '[Travel] Travel Deleted successfully';
+
+export const UPDATE_TRAVEL = '[Travel] Update Travel';
+export const UPDATE_TRAVEL_SUCCESS = '[Travel] Travel updated successfully';

@@ -6,12 +6,15 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import {useDispatch, useSelector} from "react-redux";
 import { Tooltip } from 'react-bootstrap';
 import { loadTravelCalendar } from '../../appRedux/actions';
+import Spinner from 'react-bootstrap/Spinner'
 
 const BigCalendar = () => {
 
   const dispatch = useDispatch();
   const { travel }= useSelector(travel => travel);
+  const { loading }= useSelector( ({travel}) => travel);
   const [travelState, setTravelState] = useState([]);
+  const [spinner, setSpinner] = useState(false);
   const [companyColor, setCompanyColor] = useState([
     {
       name: 'Aberdeen BXL',
@@ -90,6 +93,10 @@ const BigCalendar = () => {
     dispatch(loadTravelCalendar(date));
   }, [dispatch]);
 
+
+
+
+
   useEffect(() => {
     const value = [];
     if (travel.calendar && travel.calendar.length > 0) {
@@ -116,8 +123,6 @@ const BigCalendar = () => {
   const openEvent = (e) => {
     console.log('open')
   }
-
-
 
   // useEffect(() => {
   //   //var prev = document.getElementById('fc-prev-button')
@@ -173,37 +178,54 @@ const BigCalendar = () => {
     dispatch(loadTravelCalendar(date));
   }, [month]);
 
+  // useEffect(() => {
+  //   if (loading){
+  //     console.log('loading true!!!!')
+  //     setSpinner(true);
+  //     prev[0].disabled = true;
+  //     next[0].disabled = true;
+  //   } else {
+  //     console.log('loading false!!!!')
+  //     setSpinner(false);
+  //     prev[0].disabled = false;
+  //     next[0].disabled = false;
+  //   }  
+  // }, [loading]);
+
 
     return (
       <> 
       <div className="grid grid-cols bg-white shadow-lg rounded-xl border border-gray-200 px-5 py-4 border-b border-gray-100" >
         
+        {/* {spinner ? <Spinner animation="border" variant="danger" /> : ""} */}
         <FullCalendar
-          plugins={[ dayGridPlugin, timeGridPlugin, interactionPlugin ]}
-          headerToolbar={{
-            left: "prev,next today",
-            center: "title",
-            right: 'dayGridMonth'        
-          }}
-          
-          initialView="dayGridMonth"
-          weekends={true}
-          eventColor={travelState.map(x => x.color)}
-          eventRender={ (info) => {
-            new Tooltip(info.el, {
-              title: 'info.event.extendedProps.description',
-              placement: 'top',
-              trigger: 'hover',
-              container: 'body'
-            });
-          }}
-          dayMaxEvents={true}
-          aspectRatio={1}
-          height={950}
-          displayEventTime= {false}
-          events={travelState}
-          eventClick={(e) => openEvent(e)}
-          ref={calendarRef}/>
+        plugins={[ dayGridPlugin, timeGridPlugin, interactionPlugin ]}
+        headerToolbar={{
+          left: "prev,next today",
+          center: "title",
+          right: 'dayGridMonth'        
+        }}
+        
+        initialView="dayGridMonth"
+        weekends={true}
+        eventColor={travelState.map(x => x.color)}
+        eventRender={ (info) => {
+          new Tooltip(info.el, {
+            title: 'info.event.extendedProps.description',
+            placement: 'top',
+            trigger: 'hover',
+            container: 'body'
+          });
+        }}
+        dayMaxEvents={true}
+        aspectRatio={1}
+        height={950}
+        displayEventTime= {false}
+        events={travelState}
+        eventClick={(e) => openEvent(e)}
+        ref={calendarRef}/>
+        
+
         </div>
       </>
     )

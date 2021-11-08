@@ -5,60 +5,79 @@ import uuid from "react-uuid";
 import { Card, Button } from "tailwind-react-ui";
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { createTravel } from "../../appRedux/actions/Travel.js";
+import { createTravel, updateTravel } from "../../appRedux/actions/Travel.js";
 import { Col, Row, Container, Modal, Form } from "react-bootstrap";
 import { loadCompanies, loadEmployees } from '../../appRedux/actions';
 import { Formik } from "formik";
 import * as yup from "yup";
+import moment from 'moment';
 
-const ModalCreate = (props) => {
-  const [createOpen, setSearchOpen] = useState(false);
+const ModalCreate = ({show,setvisiblechild,dataFromParent}) => {
+
+  const localToUtc = (value) => {
+    return moment(value).utcOffset(0, true);
+  }
   const dispatch = useDispatch();
-  const trigger = useRef(null);
-  const searchContent = useRef(null);  
-  const [open, setOpen] = useState(true);
-  const cancelButtonRef = useRef(null);
-
 	const companies = useSelector(({select}) => select.companies);
-  const { added }= useSelector( ({travel}) => travel);
+  const { added,updated }= useSelector( ({travel}) => travel);
   const [purposeState, setPurposeState] = useState('');
   const [companyId, setCompanyId] = useState();
   const [travelDetails, setTravelDetails] = useState([
     {
       TravelEntryId: uuid(),
       TravelId: uuid(),
-      Date : new Date(),
+      Date : localToUtc(new Date()),
       Description: "",
     },
   ]);
+  const [travelDetailsSend, setTravelDetailsSend] = useState([])
 
   useEffect(() => {
     dispatch(loadEmployees());
     dispatch(loadCompanies());
   }, [dispatch]);
 
+  const [visible, setVisible] = useState(false);
+
+  const handleVisible = () => {
+    setVisible(true)
+  }
+
   useEffect(() => {
-    if (added){
-      setShow(false);
+    if (added || updated){
+      setVisible(false);
+      if (setvisiblechild != undefined) {
+        setvisiblechild(false)
+      }
     }
-  }, [added]);
+  }, [added,updated]);
 
-  const [show, setShow] = useState(false);
+  useEffect(() => {
+    if (show && show != undefined){
+      setVisible(true)
+    }
+  }, [show]);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleClose = () => {
+    setVisible(false);
+    if (setvisiblechild != undefined) {
+      setvisiblechild(false)
+    }
+  }
 
   const addTravelDate = (el) => {
-    console.log(el, ',fdsgbmdsgfbksfbgg');
+    console.log(el,'elllll')
     const value = [...travelDetails];
     value.push({
       TravelEntryId: uuid(),
       TravelId: uuid(),
-      Date: el,
+      Date: localToUtc(new Date(el)),
       Description: "",
     });
     setTravelDetails(value);
   };
+
+
 
   const remSection = (date) => {
     const value  = [...travelDetails];
@@ -66,22 +85,47 @@ const ModalCreate = (props) => {
     setTravelDetails(value);
   }
 
-  const onKeyUpChange = (value, TravelId) => {
-    travelDetails.find(x => x.TravelId === TravelId).Description = value;
+  const onKeyUpChange = (value, TravelEntryId) => {
+    console.log('value:',value)
+    console.log('travel entry id:', TravelEntryId)
+    console.log(travelDetails,'travel details')
+    travelDetails.find(x => x.TravelEntryId === TravelEntryId).Description = value;
   }
 
   
   function onChange(value, name) {
-    console.log('chanigng company')
     if (name.toString() === 'company'){
       setCompanyId(value.target.value);
     }
   }
 
+
+
   const initialValues = {
-    company: "",
-    purpose: ""
+    company: dataFromParent != undefined ? dataFromParent.Company.CompanyId:"",
+    purpose: dataFromParent != undefined ? dataFromParent.Purpose:""
   };
+
+
+
+  useEffect(() => {
+    console.log(dataFromParent,'data from parent!!!')
+    if (dataFromParent != undefined && dataFromParent.TravelEntries.length > 0){
+      const value = [...travelDetails];
+      value.length = 0;
+      dataFromParent.TravelEntries.forEach(x => {
+        value.push({
+          TravelEntryId: x.TravelEntryId,
+          TravelId: dataFromParent.TravelId,
+          Date: new Date(x.Date),
+          Description: x.Description,
+        });
+      });
+
+      console.log(value,'valllll')
+      setTravelDetails(value);
+    }
+  }, [dataFromParent]);
 
 
   const schema = yup.object().shape({
@@ -91,7 +135,9 @@ const ModalCreate = (props) => {
 
   const handlerSubmitApi = () => {
     console.log('handling submit!!!')
+    let travelId = dataFromParent == undefined ? 0 : dataFromParent.TravelId;
     const value =  {
+      "TravelId":travelId,
       "Purpose": purposeState,
       "Company": {
           "CompanyId": companyId
@@ -101,7 +147,14 @@ const ModalCreate = (props) => {
       },
       "TravelEntries": travelDetails
   }
-    dispatch(createTravel(value));
+    if (dataFromParent == undefined){
+      console.log(value,'VALUE:::::')
+      dispatch(createTravel(value));
+    } else{
+      console.log(value,'VALUE:::::')
+     dispatch(updateTravel(value));
+    }
+
   }
 
 
@@ -110,13 +163,14 @@ const ModalCreate = (props) => {
       <button
         className="btn bg-red-500 hover:bg-red-600 text-white"
         aria-controls="search-modal"
-        onClick={handleShow}>
+        onClick={handleVisible}>
         <span className="hidden xs:block ml-2">Add Travelling</span>
       </button> 
       <Modal
         size="lg"
-        show={show}
         onHide={handleClose}
+        show={visible}
+        setvisiblechild = {setvisiblechild}
         backdrop="static"
         keyboard={false}>
         <Formik validationSchema={schema} initialValues={initialValues}>
@@ -161,12 +215,11 @@ const ModalCreate = (props) => {
             {/* Row 2 */}
             <Row className="mt-8 mb-8">
               <Col xs={6} md={6}>
-                <Calendar onClickDay={(el) => addTravelDate(el)} />
+                <Calendar utcOffset={0,true} onClickDay={(el) => addTravelDate(el)} />
               </Col>
               <Col xs={6} md={6} className="autoscroll">
                   {travelDetails && travelDetails.map((travelDetail, index) => (
                       <>
-                      {console.log(index,'index!!!')}
                         <div key={index} className="selectedDate">
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -177,7 +230,7 @@ const ModalCreate = (props) => {
                           {/* {formatDate(travelDetail.Date)} */}
                         </div>
                         <textarea className="resize-none rounded-md areadesc"
-                          onKeyUp={e => onKeyUpChange(e.target.value, travelDetail.TravelId)}></textarea>
+                          onKeyUp={e => onKeyUpChange(e.target.value, travelDetail.TravelEntryId)}>{travelDetail.Description}</textarea>
                         {travelDetails.length > 1 && <span className="btnremove" onClick={() => remSection(travelDetail.Date)}>
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
@@ -190,8 +243,14 @@ const ModalCreate = (props) => {
             
           </Container>
         </Modal.Body>
+        {/* disabled={!(dirty && isValid)} */}
         <Modal.Footer>
-          <Button className="btn bg-red-500 hover:bg-red-600 text-white" onClick={handlerSubmitApi} disabled={!(dirty && isValid)}>Create Travelling</Button>
+          <Button className="btn bg-red-500 hover:bg-red-600 text-white" onClick={handlerSubmitApi} disabled={dataFromParent == undefined ? !(dirty && isValid) : !(isValid)}>
+            
+              {(dataFromParent == undefined) ? 'Create Travelling' : 'Update Travelling'}
+            
+            
+            </Button>
         </Modal.Footer>
         </Form>
         )}

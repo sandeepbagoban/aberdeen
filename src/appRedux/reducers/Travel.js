@@ -1,11 +1,12 @@
-import {CREATE_TRAVEL, CREATE_TRAVEL_SUCCESS, LOAD_TRAVEL, LOAD_TRAVEL_SUCCESS, LOAD_TRAVEL_CALENDAR, LOAD_TRAVEL_CALENDAR_SUCCESS, DELETE_TRAVEL, DELETE_TRAVEL_SUCCESS} from '../types/Travel';
+import {CREATE_TRAVEL, CREATE_TRAVEL_SUCCESS, LOAD_TRAVEL, LOAD_TRAVEL_SUCCESS, LOAD_TRAVEL_CALENDAR, LOAD_TRAVEL_CALENDAR_SUCCESS, DELETE_TRAVEL, DELETE_TRAVEL_SUCCESS, UPDATE_TRAVEL, UPDATE_TRAVEL_SUCCESS} from '../types/Travel';
 
 const INIT_STATE = {    
     travels:[],
     createTravels: {},
-    loading:true,
+    loading:false,
     added: false,
     deleted: false,
+    updated: false,
     calendar: []
   };
  
@@ -48,6 +49,16 @@ export default (state=INIT_STATE, action) => {
                     ...state,              
                     added: true
             };
+        case UPDATE_TRAVEL: 
+        return {
+            ...state,       
+            updated: false, 
+        };
+        case UPDATE_TRAVEL_SUCCESS:
+        return {
+            ...state,              
+            updated: true
+        };
         case LOAD_TRAVEL_CALENDAR:
                 return {
                     ...state,

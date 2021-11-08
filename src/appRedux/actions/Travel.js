@@ -1,4 +1,4 @@
-import { CREATE_TRAVEL, CREATE_TRAVEL_SUCCESS, LOAD_TRAVEL, LOAD_TRAVEL_SUCCESS, LOAD_TRAVEL_CALENDAR, LOAD_TRAVEL_CALENDAR_SUCCESS, DELETE_TRAVEL, DELETE_TRAVEL_SUCCESS } from '../types/Travel';
+import { CREATE_TRAVEL, CREATE_TRAVEL_SUCCESS, LOAD_TRAVEL, LOAD_TRAVEL_SUCCESS, LOAD_TRAVEL_CALENDAR, LOAD_TRAVEL_CALENDAR_SUCCESS, DELETE_TRAVEL, DELETE_TRAVEL_SUCCESS, UPDATE_TRAVEL, UPDATE_TRAVEL_SUCCESS } from '../types/Travel';
 
 export const loadTravel = (travelstate) => {
     return {
@@ -33,6 +33,19 @@ export const createTravelSuccess = (travels) => {
   return {
     type: CREATE_TRAVEL_SUCCESS,
     //travels: travels
+  };
+};
+
+export const updateTravel = (travels) => {
+  return {
+    type: UPDATE_TRAVEL,
+    updateTravels: travels
+  };
+};
+
+export const updateTravelSuccess = () => {
+  return {
+    type: UPDATE_TRAVEL_SUCCESS,
   };
 };
 

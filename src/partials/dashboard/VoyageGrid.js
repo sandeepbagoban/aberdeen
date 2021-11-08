@@ -7,7 +7,8 @@ import { Col, Row, Container, Button, Form } from "react-bootstrap";
 import "react-datepicker/dist/react-datepicker.css";
 import Datatable from '../actions/Datatable';
 import Table from "react-tailwind-table";
-import Dialog from 'react-bootstrap-dialog'
+import Dialog from 'react-bootstrap-dialog';
+import ModalCreate from './ModalCreate';
 
 const VoyageGrid = ({ props }) => {
   const dispatch = useDispatch();
@@ -26,21 +27,20 @@ const VoyageGrid = ({ props }) => {
 	})
 
   const { travel }= useSelector(travel => travel);
-  const { added,deleted }= useSelector( ({travel}) => travel);
+  const { added,deleted,updated }= useSelector( ({travel}) => travel);
   const employees = useSelector(({select}) => select.employees);
 	const companies = useSelector(({select}) => select.companies);
   var dialog;
   const formRef = useRef(null);
 
   useEffect(() => {
-    console.log(page,'page is:')
     dispatch(loadTravel(page));
-  }, [dispatch,added,deleted]);
+  }, [dispatch,added,deleted,updated]);
 
   useEffect(() => {
     dispatch(loadEmployees());
     dispatch(loadCompanies());
-  }, [dispatch,added]);
+  }, [dispatch]);
 
 
 
@@ -172,8 +172,6 @@ const VoyageGrid = ({ props }) => {
   };
 
   const onChange = (value,name) => {
-    console.log(value,'on changing company')
-    console.log(value.target.value,'target value!!!!')
     if (name.toString() === 'company'){
       page.companyid = value.target.value;
     }
@@ -229,10 +227,13 @@ const VoyageGrid = ({ props }) => {
     })
   }
 
-  const update_Travel = (e, row) => {
-    console.log('updating travel!!!')
-  }
+  const [visiblechild, setvisiblechild] = useState(false);
+  const [dataFromParent, setdatafromparent] = useState();
 
+  const update_Travel = (e, row) => {
+    setvisiblechild(true);
+    setdatafromparent(row);
+  }
 
   return (
     <>
@@ -242,15 +243,6 @@ const VoyageGrid = ({ props }) => {
           <Form ref={formRef}>
           <Row>
             <Col xs={6} md={6}>
-              {/* <label className="block mb-2">
-                <span className="text-gray-300 title">Company</span>
-                <select className="form-select block w-full" onChange={e => onChange(e,'company')}>
-                <option key="-1" value="-1">---SELECT ALL COMPANIES---</option>
-                {companies.map ((company) =>{
-                  return <option key={company.id} value={company.id}>{company.text}</option>
-                  })}
-                </select>
-              </label> */}
               <span className="text-gray-300 title">Company</span>
               <Form.Select aria-label="Default select example" onChange={e => onChange(e,'company')}>
                 <option key="-1" value="-1">---SELECT ALL COMPANIES---</option>
@@ -260,15 +252,6 @@ const VoyageGrid = ({ props }) => {
               </Form.Select>
             </Col>
             <Col xs={6} md={6}>
-              {/* <label className="block mb-2">
-                <span className="text-gray-300 title">Employee</span>
-                <select className="form-select block w-full" onChange={e => onChange(e,'employee')}>
-                <option key="-1" value="-1">---SELECT ALL EMPLOYEES---</option>
-                  {employees.map ((employee) =>{
-                  return <option key={employee.id} value={employee.id}>{employee.text}</option>
-                  })}
-                </select>
-              </label> */}
               <span className="text-gray-300 title">Employee</span>
               <Form.Select aria-label="Default select example" onChange={e => onChange(e,'employee')}>
                 <option key="-1" value="-1">---SELECT ALL EMPLOYEES---</option>
@@ -315,11 +298,7 @@ const VoyageGrid = ({ props }) => {
           </div>
           </Col>
           </Row> 
-
           </Form>
-          
-
-     
           {/* <Row>
             <Col xs={12} md={12}>
               <Datatable/>
@@ -335,6 +314,7 @@ const VoyageGrid = ({ props }) => {
         />
         
         <Dialog ref={(el) => { dialog = el }} />
+        <ModalCreate show={visiblechild} setvisiblechild={setvisiblechild} dataFromParent={dataFromParent}></ModalCreate>
       </div>
     </>
   );
