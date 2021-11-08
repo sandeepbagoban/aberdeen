@@ -121,7 +121,10 @@ const BigCalendar = () => {
   }, [travel])
 
   const openEvent = (e) => {
-    console.log('open')
+    console.log('open', e.event._def.title)
+    return <>
+      {e.event._def.title}
+    </>
   }
 
   // useEffect(() => {
@@ -211,7 +214,7 @@ const BigCalendar = () => {
         eventColor={travelState.map(x => x.color)}
         eventRender={ (info) => {
           new Tooltip(info.el, {
-            title: 'info.event.extendedProps.description',
+            title: info.event.extendedProps.description,
             placement: 'top',
             trigger: 'hover',
             container: 'body'
