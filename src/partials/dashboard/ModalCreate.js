@@ -30,7 +30,6 @@ const ModalCreate = ({show,setvisiblechild,dataFromParent}) => {
       Description: "",
     },
   ]);
-  const [travelDetailsSend, setTravelDetailsSend] = useState([])
 
   useEffect(() => {
     dispatch(loadEmployees());
@@ -61,9 +60,7 @@ const ModalCreate = ({show,setvisiblechild,dataFromParent}) => {
 
   const handleClose = () => {
     setVisible(false);
-    if (setvisiblechild != undefined) {
-      setvisiblechild(false)
-    }
+    setvisiblechild(false)
   }
 
   const addTravelDate = (el) => {
@@ -78,6 +75,17 @@ const ModalCreate = ({show,setvisiblechild,dataFromParent}) => {
     setTravelDetails(value);
   };
 
+  const clearTravelDetails = () => {
+    const value = [...travelDetails];
+    value.length = 0;
+    value.push({
+      TravelEntryId: uuid(),
+      TravelId: uuid(),
+      Date : localToUtc(new Date()),
+      Description: ""
+    });
+    setTravelDetails(value);
+  }
 
 
   const remSection = (travelEntryId) => {
@@ -108,9 +116,9 @@ const ModalCreate = ({show,setvisiblechild,dataFromParent}) => {
 
   useEffect(() => {
     console.log(dataFromParent,'data from parent!!!')
+    const value = [...travelDetails];
+    value.length = 0;
     if (dataFromParent != undefined && dataFromParent.TravelEntries.length > 0){
-      const value = [...travelDetails];
-      value.length = 0;
       dataFromParent.TravelEntries.forEach(x => {
         value.push({
           TravelEntryId: x.TravelEntryId,
@@ -132,7 +140,6 @@ const ModalCreate = ({show,setvisiblechild,dataFromParent}) => {
   })
 
   const handlerSubmitApi = () => {
-    console.log('handling submit!!!')
     let travelId = dataFromParent == undefined ? 0 : dataFromParent.TravelId;
     const value =  {
       "TravelId":travelId,
@@ -148,6 +155,7 @@ const ModalCreate = ({show,setvisiblechild,dataFromParent}) => {
     if (dataFromParent == undefined){
       console.log(value,'VALUE:::::')
       dispatch(createTravel(value));
+      clearTravelDetails();
     } else{
       console.log(value,'VALUE:::::')
      dispatch(updateTravel(value));
@@ -159,12 +167,12 @@ const ModalCreate = ({show,setvisiblechild,dataFromParent}) => {
 
   return (
     <div>
-      <button
+      {/* <button
         className="btn bg-red-500 hover:bg-red-600 text-white"
         aria-controls="search-modal"
         onClick={handleVisible}>
         <span className="hidden xs:block ml-2">Add Travelling</span>
-      </button> 
+      </button>  */}
       <Modal
         size="lg"
         onHide={handleClose}
@@ -228,8 +236,6 @@ const ModalCreate = ({show,setvisiblechild,dataFromParent}) => {
                           {new Intl.DateTimeFormat(['ban', 'id']).format(travelDetail.Date)}
                           {/* {formatDate(travelDetail.Date)} */}
                         </div>
-                        {console.log(travelDetail,'travel detail')}
-                        {console.log(travelDetail.Description,'travel detail description')}
                         <textarea className="resize-none rounded-md areadesc"
                         key={travelDetail.TravelEntryId}
                         onKeyUp={e => onKeyUpChange(e.target.value, travelDetail.TravelEntryId)}

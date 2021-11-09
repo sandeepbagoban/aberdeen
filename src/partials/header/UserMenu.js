@@ -32,6 +32,14 @@ function UserMenu() {
     return () => document.removeEventListener('keydown', keyHandler);
   });
 
+  const [visiblechild, setvisiblechild] = useState(false);
+  const [dataFromParent, setdatafromparent] = useState();
+
+  const handleVisible = (e, row) => {
+    setvisiblechild(true);
+    setdatafromparent(undefined);
+  }
+
   return (
     <div className="relative inline-flex">
       {/* <button
@@ -50,7 +58,17 @@ function UserMenu() {
           </svg>
         </div> */}
       {/* </button> */}
-      <ModalCreate/>
+      {/* <ModalCreate/> */}
+
+      <button
+        className="btn bg-red-500 hover:bg-red-600 text-white"
+        aria-controls="search-modal"
+        onClick={handleVisible}
+        >
+        <span className="hidden xs:block ml-2">Add Travelling</span>
+      </button> 
+      <ModalCreate show={visiblechild} setvisiblechild={setvisiblechild} dataFromParent={dataFromParent}></ModalCreate>
+
       <Transition
         className="origin-top-right z-10 absolute top-full right-0 min-w-44 bg-white border border-gray-200 py-1.5 rounded shadow-lg overflow-hidden mt-1"
         show={dropdownOpen}

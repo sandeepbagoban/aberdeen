@@ -5,13 +5,36 @@ import {loadTravel} from '../../appRedux/actions/Travel';
 import DatePicker from 'react-date-picker'
 import { Col, Row, Container, Button, Form } from "react-bootstrap";
 import "react-datepicker/dist/react-datepicker.css";
-import Datatable from '../actions/Datatable';
-import Table from "react-tailwind-table";
+// import Datatable from '../actions/Datatable';
+// import Table from "react-tailwind-table";
 import Dialog from 'react-bootstrap-dialog';
 import ModalCreate from './ModalCreate';
-import DataTable from 'react-data-table-component';
+import DataTable, { createTheme } from 'react-data-table-component';
 
 const VoyageGrid = ({ props }) => {
+
+  createTheme('solarized', {
+    // text: {
+    //   primary: '#268bd2',
+    //   //secondary: '#2aa198',
+    // },
+    // background: {
+    //   default: '#e2e8f0',
+    // },
+    // context: {
+    //   background: '#cb4b16',
+    //   text: '#FFFFFF',
+    // },
+    divider: {
+      default: '#073642',
+    },
+    // action: {
+    //   button: 'rgba(0,0,0,.54)',
+    //   hover: 'rgba(0,0,0,.08)',
+    //   disabled: 'rgba(0,0,0,.12)',
+    // },
+  });
+
   const dispatch = useDispatch();
   const [startDatevalue, onChangeStartDate] = useState();
   const [endDatevalue, onChangeEndDate] = useState();
@@ -24,7 +47,7 @@ const VoyageGrid = ({ props }) => {
 		order:'',
 		column:'',
 		currentpage:1,
-		count:4
+		count:10
 	})
 
   const { travel }= useSelector(travel => travel);
@@ -100,11 +123,15 @@ const columns =  [
   },
   {
     name: "Start  Date",
-    selector: row => row.startDate
+    selector: row => {
+      return(<>{ formatDate(row.startDate) }</>)
+    }
   },
   {
     name: "End Date",
-    selector: row => row.endDate
+    selector: row => {
+      return(<>{ formatDate(row.endDate) }</>)
+    }
   },
   {
     name: "Action",
@@ -352,7 +379,8 @@ const columns =  [
           <Col xs={12} md={12} className="py-4">     
           <div className="action-buttons">
               <Button
-                variant="primary"
+               // variant="primary"
+               className="btn-search"
                 onClick={handleClick}>
                 Search
               </Button>
@@ -386,7 +414,8 @@ const columns =  [
       //   //noRowsPerPage: true
       // }}
       onChangePage={handleTableChange}
-      onChangeRowsPerPage={handleRowsPerPage}/>
+      onChangeRowsPerPage={handleRowsPerPage}
+      theme="solarized"/>
         
         <Dialog ref={(el) => { dialog = el }} />
         <ModalCreate show={visiblechild} setvisiblechild={setvisiblechild} dataFromParent={dataFromParent}></ModalCreate>
