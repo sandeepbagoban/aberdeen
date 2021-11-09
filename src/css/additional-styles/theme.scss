@@ -41,6 +41,7 @@ img.logoImage {
 
   :root {
     --fc-border-color: rgb(255, 234, 234);
+    // --fc-border-color: rgb(255, 255, 255);
     --fc-daygrid-event-dot-width: 5px;
   }
 
@@ -54,7 +55,7 @@ img.logoImage {
     width: 350px;
     max-width: 100%;
     background: rgb(255, 255, 255);
-    border: 1px solid rgb(255, 255, 255)!important;
+    border: 1px solid rgb(255, 240, 240)!important;
     font-family: Arial, Helvetica, sans-serif;
     line-height: 1.125em;
     font-size: 11px;
@@ -209,4 +210,24 @@ nav.rdt_Pagination > div > svg > path {
   background-color: #bbb;
   border-radius: 50%;
   display: inline-block;
+}
+
+.flex.justify-center.items-center.spinner_loader {
+  position: absolute;
+  margin: 0 auto;
+  width: 100%;
+  top: 100vh;
+  position: absolute;
+  margin-top: -25px;
+  top: 50%;
+}
+
+
+// Calendar
+a.fc-col-header-cell-cushion {
+  text-align: left;
+  float: left;
+  font-size: 15px;
+  font-weight: 100;
+  color: rgb(76, 73, 73)!important;
 }

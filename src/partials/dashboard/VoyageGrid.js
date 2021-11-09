@@ -3,10 +3,8 @@ import {useDispatch, useSelector} from "react-redux";
 import { loadCompanies, loadEmployees, deleteTravel } from '../../appRedux/actions';
 import {loadTravel} from '../../appRedux/actions/Travel';
 import DatePicker from 'react-date-picker'
-import { Col, Row, Container, Button, Form } from "react-bootstrap";
+import { Col, Row, Container, Button, Form, Spinner } from "react-bootstrap";
 import "react-datepicker/dist/react-datepicker.css";
-// import Datatable from '../actions/Datatable';
-// import Table from "react-tailwind-table";
 import Dialog from 'react-bootstrap-dialog';
 import ModalCreate from './ModalCreate';
 import DataTable, { createTheme } from 'react-data-table-component';
@@ -35,6 +33,9 @@ const VoyageGrid = ({ props }) => {
     // },
   });
 
+  const [pending, setPending] = React.useState(true);
+
+
   const dispatch = useDispatch();
   const [startDatevalue, onChangeStartDate] = useState();
   const [endDatevalue, onChangeEndDate] = useState();
@@ -54,6 +55,8 @@ const VoyageGrid = ({ props }) => {
   const { added,deleted,updated }= useSelector( ({travel}) => travel);
   const employees = useSelector(({select}) => select.employees);
 	const companies = useSelector(({select}) => select.companies);
+
+  const [travelState, SetTravelState] = useState([]);
   var dialog;
   const formRef = useRef(null);
   const countPerPage = 3;
@@ -66,42 +69,7 @@ const VoyageGrid = ({ props }) => {
     dispatch(loadEmployees());
     dispatch(loadCompanies());
   }, [dispatch]);
-
-  // const column = () => {
-  //   return [
-  //     {
-  //       field: "TravelId",
-  //       use: "Travel ID",
-  //     },
-  //     {
-  //       field: "Employee.Name",
-  //       use: "Employee Name",
-  //     },
-  //     {
-  //       field: "Company.Name",
-  //       use: "Company Name",
-  //     },
-  //     {
-  //       field: "Purpose",
-  //       use: "Purpose",
-  //     },
-  //     {
-  //       field: "startDate",
-  //       use: "Start  Date",
-  //     },
-  //     {
-  //       field: "endDate",
-  //       use: "End Date",
-  //     },
-  //     {
-  //       field: "action",
-  //       use: "Action",
-  //     },
-  //   ];
-  // };
-
-
-   
+  
 const columns =  [
   {
     name: "Travel ID",
@@ -148,7 +116,7 @@ const columns =  [
       </svg>
     </button>
     <button className="btn-viewmore btn bg-white border-gray-200 hover:border-red-300 text-gray-500 hover:text-gray-600" aria-haspopup="true" onClick={e => delete_Travel(e,row)}>
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="20" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="20" fill="#c34949" class="bi bi-trash" viewBox="0 0 16 16">
       <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
       <path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
     </svg>
@@ -225,7 +193,7 @@ const columns =  [
         </>
       );
     }
-    if (column.field == "startDate" || column.field == "endDate"){
+    if (column.field === "startDate" || column.field === "endDate"){
       display_value = formatDate(display_value)
     }
 
@@ -308,6 +276,14 @@ const columns =  [
     dispatch(loadTravel(page));
   }
 
+  // React.useEffect(() => {
+	// 	const timeout = setTimeout(() => {
+	// 		SetTravelState(travel.travels.Items);
+	// 		setPending(false);
+	// 	}, 2000);
+	// 	return () => clearTimeout(timeout);
+	// }, []);
+
   return (
     <>
       <div className="grid grid-cols bg-white shadow-lg rounded-xl border border-gray-200 px-5 py-4 border-b border-gray-100">
@@ -357,18 +333,18 @@ const columns =  [
           <Row>
             <Col xs={12} md={12} className="py-4">     
               <div className="action-buttons">
-                  <button
-                    className="clear-filters btn bg-gray-100 hover:bg-gray-600 text-black"
+                  <Button
+                    className="clear-filters btn border-gray-100 hover:border-gray-300 bg-gray-100 hover:bg-gray-600 text-black"
                     variant="primary"
                     onClick={handleClickClearFilters}>
                     Clear Filters
-                  </button> 
-                  <button
-                    className="search-filters btn bg-red-500 hover:bg-red-600 text-white"
+                  </Button> 
+                  <Button
+                    className="search-filters btn border-red-100 hover:border-red-600 bg-red-500 hover:bg-red-600 text-white"
                     variant="primary"
                     onClick={handleClick}>
                     Search
-                  </button> 
+                  </Button> 
               </div>
             </Col>
           </Row> 
@@ -381,25 +357,31 @@ const columns =  [
           table_header="Voyage Table"
           row_render={rowcheck}
         /> */}
-
-      <DataTable title="Voyage" columns={columns} data={travel.travels.Items} highlightOnHover
-      pagination
-      paginationServer
-      paginationPerPage={page.count}
-      paginationTotalRows={travel.travels.Count}
-      paginationRowsPerPageOptions={[5, 10, 15]}
-      // paginationComponentOptions={{
-      //   //selectAllRowsItem: true,
-      //   //noRowsPerPage: true
-      // }}
-      onChangePage={handleTableChange}
-      onChangeRowsPerPage={handleRowsPerPage}
-      theme="solarized"/>
+{console.log('asdgasdad', travel.travels.loading)}
+      <DataTable 
+          title="Voyage" 
+          columns={columns} 
+          data={travel.travels.Items} 
+          highlightOnHover
+          pagination
+          paginationServer
+          paginationPerPage={page.count}
+          paginationTotalRows={travel.travels.Count}
+          paginationRowsPerPageOptions={[5, 10, 15]}
+          progressPending={travel.loading}
+          progressComponent={
+            <div class="flex justify-center items-center">
+              <div class="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+            </div>
+          }
+          onChangePage={handleTableChange}
+          onChangeRowsPerPage={handleRowsPerPage}
+          theme="solarized"/>
         
         <Dialog ref={(el) => { dialog = el }} />
         <ModalCreate show={visiblechild} setvisiblechild={setvisiblechild} dataFromParent={dataFromParent}></ModalCreate>
       </div>
     </>
   );
-};
+}; 
 export default VoyageGrid;

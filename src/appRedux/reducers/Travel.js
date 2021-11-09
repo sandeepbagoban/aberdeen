@@ -3,7 +3,7 @@ import {CREATE_TRAVEL, CREATE_TRAVEL_SUCCESS, LOAD_TRAVEL, LOAD_TRAVEL_SUCCESS, 
 const INIT_STATE = {    
     travels:[],
     createTravels: {},
-    loading:false,
+    loading:true,
     added: false,
     deleted: false,
     updated: false,

@@ -4,9 +4,9 @@ import dayGridPlugin from '@fullcalendar/daygrid'; // a plugin!
 import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
 import timeGridPlugin from '@fullcalendar/timegrid';
 import {useDispatch, useSelector} from "react-redux";
-import { Tooltip } from 'react-bootstrap';
+import { Spinner, Tooltip } from 'react-bootstrap';
 import { loadTravelCalendar } from '../../appRedux/actions';
-import Spinner from 'react-bootstrap/Spinner'
+import Loader from '../actions/spinner';
 
 const BigCalendar = () => {
 
@@ -94,13 +94,10 @@ const BigCalendar = () => {
   }, [dispatch]);
 
 
-
-
-
   useEffect(() => {
     const value = [];
     if (travel.calendar && travel.calendar.length > 0) {
-      console.log(travel, '<----travel');
+      console.log(travel.loading, '<----travel');
       travel.calendar.map(x  => {
         var aberColor = '';
         companyColor.map(color => {
@@ -121,23 +118,8 @@ const BigCalendar = () => {
   }, [travel])
 
   const openEvent = (e) => {
-    console.log('open', e.event._def.title)
-    return <>
-      {e.event._def.title}
-    </>
+    console.log('open', e)
   }
-
-  // useEffect(() => {
-  //   //var prev = document.getElementById('fc-prev-button')
-  //   var prev =document.getElementsByClassName("fc-prev-button");
-  //   var prevtest =document.getElementsByClassName("fc-prev-button111");
-
-  //   console.log(prev.length,'prev button')
-  //   console.log(prevtest.length,'prev test button')
-  //   // prev.addEventListener('click', function() {
-  //   //   console.log('previous button clicked')
-  //   // });
-  // }, []);
 
   var prev =document.getElementsByClassName("fc-prev-button");
   var next =document.getElementsByClassName("fc-next-button");
@@ -145,7 +127,6 @@ const BigCalendar = () => {
   var calendarRef = React.createRef()
   var [month, setmonth] = useState([]);
   var [year, setyear] = useState([]);
-
 
   if (prev.length > 0){
     prev[0].addEventListener('click', function() {
@@ -174,27 +155,10 @@ const BigCalendar = () => {
   };
 
   useEffect(() => {
-
     date.year = year;
     date.month = month;
-    console.log(date,'DATE')
     dispatch(loadTravelCalendar(date));
   }, [month]);
-
-  // useEffect(() => {
-  //   if (loading){
-  //     console.log('loading true!!!!')
-  //     setSpinner(true);
-  //     prev[0].disabled = true;
-  //     next[0].disabled = true;
-  //   } else {
-  //     console.log('loading false!!!!')
-  //     setSpinner(false);
-  //     prev[0].disabled = false;
-  //     next[0].disabled = false;
-  //   }  
-  // }, [loading]);
-
 
     return (
       <>
@@ -206,33 +170,33 @@ const BigCalendar = () => {
             <span class="dot"></span>
         </div> */}
         
-        {/* {spinner ? <Spinner animation="border" variant="danger" /> : ""} */}
+        {travel.loading ? <Loader/> : '' }
         <FullCalendar
-        plugins={[ dayGridPlugin, timeGridPlugin, interactionPlugin ]}
-        headerToolbar={{
-          left: "prev,next today",
-          center: "title",
-          right: 'dayGridMonth'        
-        }}
-        
-        initialView="dayGridMonth"
-        weekends={true}
-        eventColor={travelState.map(x => x.color)}
-        eventRender={ (info) => {
-          new Tooltip(info.el, {
-            title: info.event.extendedProps.description,
-            placement: 'top',
-            trigger: 'hover',
-            container: 'body'
-          });
-        }}
-        dayMaxEvents={true}
-        aspectRatio={1}
-        height={780}
-        displayEventTime= {false}
-        events={travelState}
-        eventClick={(e) => openEvent(e)}
-        ref={calendarRef}/>
+          plugins={[ dayGridPlugin, timeGridPlugin, interactionPlugin ]}
+          headerToolbar={{
+            left: "prev,next today",
+            center: "title",
+            right: 'dayGridMonth'        
+          }}
+          
+          initialView="dayGridMonth"
+          weekends={true}
+          eventColor={travelState.map(x => x.color)}
+          eventRender={ (info) => {
+            new Tooltip(info.el, {
+              title: info.event.extendedProps.description,
+              placement: 'top',
+              trigger: 'hover',
+              container: 'body'
+            });
+          }}
+          dayMaxEvents={true}
+          aspectRatio={1}
+          height={780}
+          displayEventTime= {false}
+          events={travelState}
+          dateClick={(e) => openEvent(e)}
+          ref={calendarRef}/>
         
 
         </div>
