@@ -10,7 +10,7 @@
         </linearGradient>
         <path id="icon2-a" d="M16 0l16 32-16-5-16 5z" />
     </defs>
-    <g transform="rotate(90 16 16)" fill="none" fill-rule="evenodd">
+    <g transform="rotate(90 16 16)" fill="none" fillRule="evenodd">
         <mask id="icon2-d" fill="#fff">
             <use xlink:href="#icon2-a" />
         </mask>

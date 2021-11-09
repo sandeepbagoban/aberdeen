@@ -135,7 +135,7 @@ const ModalCreate = ({show,setvisiblechild,dataFromParent}) => {
     const value = [...travelDetails];
     const finalvalue = [...finaltravelDetails];
     value.length = 0;
-    if (dataFromParent != undefined && dataFromParent.TravelEntries.length > 0){
+    if (dataFromParent !== undefined && dataFromParent.TravelEntries !== null) {
       dataFromParent.TravelEntries.forEach(x => {
         value.push({
           TravelEntryId: x.TravelEntryId,
