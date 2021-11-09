@@ -160,6 +160,31 @@ const BigCalendar = () => {
     dispatch(loadTravelCalendar(date));
   }, [month]);
 
+  // useEffect(() => {
+  //   if (loading){
+  //     console.log('loading true!!!!')
+  //     setSpinner(true);
+  //     prev[0].disabled = true;
+  //     next[0].disabled = true;
+  //   } else {
+  //     console.log('loading false!!!!')
+  //     setSpinner(false);
+  //     prev[0].disabled = false;
+  //     next[0].disabled = false;
+  //   }  
+  // }, [loading]);
+
+  const eventRender = (e) =>{
+    console.log(e)
+    // var tooltip = new Tooltip(info.el, {
+    //   title: info.event.extendedProps.description,
+    //   placement: 'top',
+    //   trigger: 'hover',
+    //   container: 'body'
+    // });
+  }
+
+
     return (
       <>
       <div className="grid grid-cols bg-white shadow-lg rounded-xl border border-gray-200 px-5 py-4 border-b border-gray-100" >

@@ -72,32 +72,42 @@ const VoyageGrid = ({ props }) => {
   
 const columns =  [
   {
+    key:"Id",
     name: "Travel ID",
-    selector: row => row.TravelId
+    selector: row => row.TravelId,
+    sortable: true
   },
   {
+    key:"Employee",
     name: "Employee Name",
-    selector: row => row.Employee.Name
+    selector: row => row.Employee.Name,
+    sortable: true
   },
   {
+    key:"Company",
     name: "Company Name",
-    selector: row => row.Company.Name
+    selector: row => row.Company.Name,
+    sortable: true
   },
   {
     name: "Purpose",
     selector: row => row.Purpose
   },
   {
+    key:"startDate",
     name: "Start  Date",
     selector: row => {
       return(<>{ formatDate(row.startDate) }</>)
-    }
+    },
+    sortable: true
   },
   {
+    key:"endDate",
     name: "End Date",
     selector: row => {
       return(<>{ formatDate(row.endDate) }</>)
-    }
+    },
+    sortable: true
   },
   {
     name: "Action",
@@ -276,13 +286,13 @@ const columns =  [
     dispatch(loadTravel(page));
   }
 
-  // React.useEffect(() => {
-	// 	const timeout = setTimeout(() => {
-	// 		SetTravelState(travel.travels.Items);
-	// 		setPending(false);
-	// 	}, 2000);
-	// 	return () => clearTimeout(timeout);
-	// }, []);
+  const onSort = (column,  sortOrder) => {
+    page.column = column.key;
+    page.order = sortOrder;
+    dispatch(loadTravel(page));
+    console.log(column,'column')
+    console.log(sortOrder,'sort order')
+  }
 
   return (
     <>
@@ -374,6 +384,8 @@ const columns =  [
               <div class="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
             </div>
           }
+          sortServer
+          onSort={onSort}
           onChangePage={handleTableChange}
           onChangeRowsPerPage={handleRowsPerPage}
           theme="solarized"/>

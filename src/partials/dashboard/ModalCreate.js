@@ -31,6 +31,15 @@ const ModalCreate = ({show,setvisiblechild,dataFromParent}) => {
     },
   ]);
 
+  const [finaltravelDetails, setFinalTravelDetails] = useState([
+    {
+      TravelEntryId: uuid(),
+      TravelId: uuid(),
+      Date : localToUtc(new Date()),
+      Description: "",
+    },
+  ]);
+
   useEffect(() => {
     dispatch(loadEmployees());
     dispatch(loadCompanies());
@@ -61,18 +70,25 @@ const ModalCreate = ({show,setvisiblechild,dataFromParent}) => {
   const handleClose = () => {
     setVisible(false);
     setvisiblechild(false)
+    const value = [...travelDetails];
+    setTravelDetails(finaltravelDetails);
   }
 
   const addTravelDate = (el) => {
-    console.log(el,'elllll')
+    console.log(localToUtc(new Date(el)),'elllll')
     const value = [...travelDetails];
-    value.push({
-      TravelEntryId: uuid(),
-      TravelId: uuid(),
-      Date: localToUtc(new Date(el)),
-      Description: "",
-    });
-    setTravelDetails(value);
+    console.log(value,'value::')
+    let exists = value.find(x => x.Date.isSame(localToUtc(new Date(el))));
+    console.log(exists,'date already exists!!!')
+    if (exists == undefined) {
+      value.push({
+        TravelEntryId: uuid(),
+        TravelId: uuid(),
+        Date: localToUtc(new Date(el)),
+        Description: "",
+      });
+      setTravelDetails(value);
+    }
   };
 
   const clearTravelDetails = () => {
@@ -117,6 +133,7 @@ const ModalCreate = ({show,setvisiblechild,dataFromParent}) => {
   useEffect(() => {
     console.log(dataFromParent,'data from parent!!!')
     const value = [...travelDetails];
+    const finalvalue = [...finaltravelDetails];
     value.length = 0;
     if (dataFromParent !== undefined && dataFromParent.TravelEntries !== null) {
       dataFromParent.TravelEntries.forEach(x => {
@@ -127,9 +144,9 @@ const ModalCreate = ({show,setvisiblechild,dataFromParent}) => {
           Description: x.Description,
         });
       });
-
       console.log(value,'valllll')
       setTravelDetails(value);
+      setFinalTravelDetails(value);
     }
   }, [dataFromParent]);
 
@@ -256,10 +273,7 @@ const ModalCreate = ({show,setvisiblechild,dataFromParent}) => {
         {/* disabled={!(dirty && isValid)} */}
         <Modal.Footer>
           <Button className="btn bg-red-500 hover:bg-red-600 text-white" onClick={handlerSubmitApi} disabled={dataFromParent == undefined ? !(dirty && isValid) : !(isValid)}>
-            
               {(dataFromParent == undefined) ? 'Create Travelling' : 'Update Travelling'}
-            
-            
             </Button>
         </Modal.Footer>
         </Form>
