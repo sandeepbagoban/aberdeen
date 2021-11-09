@@ -197,8 +197,14 @@ const BigCalendar = () => {
 
 
     return (
-      <> 
+      <>
       <div className="grid grid-cols bg-white shadow-lg rounded-xl border border-gray-200 px-5 py-4 border-b border-gray-100" >
+        {/* <div>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div> */}
         
         {/* {spinner ? <Spinner animation="border" variant="danger" /> : ""} */}
         <FullCalendar
@@ -222,7 +228,7 @@ const BigCalendar = () => {
         }}
         dayMaxEvents={true}
         aspectRatio={1}
-        height={950}
+        height={780}
         displayEventTime= {false}
         events={travelState}
         eventClick={(e) => openEvent(e)}
