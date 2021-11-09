@@ -116,6 +116,7 @@ a.fc-daygrid-more-link.fc-more-link {
 
 a { 
   text-decoration: none!important;
+  color: black !important;
 }
 
 
@@ -178,4 +179,34 @@ a {
   margin: 0 auto;
   position: relative;
   top: 15rem;
+}
+
+nav.rdt_Pagination > div > svg > path {
+  display: none;
+}
+
+.btn-search {
+  background: #c34949 !important;
+  border: #c34949 !important;
+}
+
+.btn-filter {
+  background: #8f8f8f !important;
+  border: #8f8f8f !important;
+}
+
+.fc-toolbar-title {
+  color: #c34949 !important;
+}
+
+.fc-today-button {
+  color: #8f8f8f !important;
+}
+
+.dot {
+  height: 25px;
+  width: 25px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
 }

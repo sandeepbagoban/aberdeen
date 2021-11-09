@@ -22,7 +22,7 @@ const FilterButton = ({ showHideCalendarState, setShowHideCalendarState }) => {
           }
           )}>
         
-        <Calendar3 color="royalblue" size={16} />
+        <Calendar3 color="#c34949" size={16} />
       </button>
 
       <button
