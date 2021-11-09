@@ -121,10 +121,10 @@ const BigCalendar = () => {
   }, [travel])
 
   const openEvent = (e) => {
-    console.log('open', e.event._def.title)
-    return <>
-      {e.event._def.title}
-    </>
+    console.log('open', e)
+    // return <>
+    //   {e.event._def.title}
+    // </>
   }
 
   // useEffect(() => {
@@ -195,6 +195,16 @@ const BigCalendar = () => {
   //   }  
   // }, [loading]);
 
+  const eventRender = (e) =>{
+    console.log(e)
+    // var tooltip = new Tooltip(info.el, {
+    //   title: info.event.extendedProps.description,
+    //   placement: 'top',
+    //   trigger: 'hover',
+    //   container: 'body'
+    // });
+  }
+
 
     return (
       <>
@@ -231,8 +241,11 @@ const BigCalendar = () => {
         height={780}
         displayEventTime= {false}
         events={travelState}
-        eventClick={(e) => openEvent(e)}
-        ref={calendarRef}/>
+        dateClick={(e) => openEvent(e)}
+        // eventClick={(e) => openEvent(e)}
+        ref={calendarRef}
+        eventRender={eventRender}
+        />
         
 
         </div>

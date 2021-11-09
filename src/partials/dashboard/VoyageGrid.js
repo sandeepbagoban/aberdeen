@@ -106,32 +106,42 @@ const VoyageGrid = ({ props }) => {
    
 const columns =  [
   {
+    key:"Id",
     name: "Travel ID",
-    selector: row => row.TravelId
+    selector: row => row.TravelId,
+    sortable: true
   },
   {
+    key:"Employee",
     name: "Employee Name",
-    selector: row => row.Employee.Name
+    selector: row => row.Employee.Name,
+    sortable: true
   },
   {
+    key:"Company",
     name: "Company Name",
-    selector: row => row.Company.Name
+    selector: row => row.Company.Name,
+    sortable: true
   },
   {
     name: "Purpose",
     selector: row => row.Purpose
   },
   {
+    key:"startDate",
     name: "Start  Date",
     selector: row => {
       return(<>{ formatDate(row.startDate) }</>)
-    }
+    },
+    sortable: true
   },
   {
+    key:"endDate",
     name: "End Date",
     selector: row => {
       return(<>{ formatDate(row.endDate) }</>)
-    }
+    },
+    sortable: true
   },
   {
     name: "Action",
@@ -298,6 +308,14 @@ const columns =  [
     dispatch(loadTravel(page));
   }
 
+  const onSort = (column,  sortOrder) => {
+    page.column = column.key;
+    page.order = sortOrder;
+    dispatch(loadTravel(page));
+    console.log(column,'column')
+    console.log(sortOrder,'sort order')
+  }
+
   return (
     <>
       <div className="grid grid-cols bg-white shadow-lg rounded-xl border border-gray-200 px-5 py-4 border-b border-gray-100">
@@ -385,6 +403,8 @@ const columns =  [
       // }}
       onChangePage={handleTableChange}
       onChangeRowsPerPage={handleRowsPerPage}
+      sortServer
+      onSort={onSort}
       theme="solarized"/>
         
         <Dialog ref={(el) => { dialog = el }} />
