@@ -7,6 +7,9 @@ import {useDispatch, useSelector} from "react-redux";
 import { Spinner, Tooltip } from 'react-bootstrap';
 import { loadTravelCalendar } from '../../appRedux/actions';
 import Loader from '../actions/spinner';
+import ReactTooltip from 'react-tooltip';
+import tippy from 'tippy.js';
+import 'tippy.js/dist/tippy.css'; // optional
 
 const BigCalendar = () => {
 
@@ -174,16 +177,25 @@ const BigCalendar = () => {
   //   }  
   // }, [loading]);
 
-  const eventRender = (e) =>{
-    console.log(e)
-    // var tooltip = new Tooltip(info.el, {
-    //   title: info.event.extendedProps.description,
-    //   placement: 'top',
-    //   trigger: 'hover',
-    //   container: 'body'
-    // });
-  }
+  // const eventMouseEnter = (e) =>{
+  //   console.log(e)
+  //   return <><span className="test">Test</span></>
+  //   // var tooltip = new Tooltip(info.el, {
+  //   //   title: info.event.extendedProps.description,
+  //   //   placement: 'top',
+  //   //   trigger: 'hover',
+  //   //   container: 'body'
+  //   // });
+  // }
 
+  const eventMouseEnter = mouseEnterInfo => {
+    tippy(mouseEnterInfo.el, {
+      content: mouseEnterInfo.event._def.title,
+      placement: "top-start",
+      arrow: false,
+      interactive: true,  
+    });
+  }
 
     return (
       <>
@@ -196,34 +208,48 @@ const BigCalendar = () => {
         </div> */}
         
         {travel.loading ? <Loader/> : '' }
-        <FullCalendar
-          plugins={[ dayGridPlugin, timeGridPlugin, interactionPlugin ]}
-          headerToolbar={{
-            left: "prev,next today",
-            center: "title",
-            right: 'dayGridMonth'        
-          }}
-          
-          initialView="dayGridMonth"
-          weekends={true}
-          eventColor={travelState.map(x => x.color)}
-          eventRender={ (info) => {
-            new Tooltip(info.el, {
-              title: info.event.extendedProps.description,
-              placement: 'top',
-              trigger: 'hover',
-              container: 'body'
-            });
-          }}
-          dayMaxEvents={true}
-          aspectRatio={1}
-          height={780}
-          displayEventTime= {false}
-          events={travelState}
-          dateClick={(e) => openEvent(e)}
-          ref={calendarRef}/>
-        
 
+          <FullCalendar
+              plugins={[ dayGridPlugin, timeGridPlugin, interactionPlugin ]}
+              headerToolbar={{
+                left: "prev,next today",
+                center: "title",
+                right: 'dayGridMonth'        
+              }}          
+              initialView="dayGridMonth"
+              weekends={true}
+              eventColor={travelState.map(x => x.color)}
+              dayMaxEvents={true}
+              aspectRatio={1}
+              height={780}
+              displayEventTime= {false}
+              events={travelState}
+              dateClick={(e) => openEvent(e)}
+              ref={calendarRef}              
+              selectHelper= {true}
+              eventMouseEnter={eventMouseEnter}
+              // eventContent= {(arg) => (
+              //  <i>
+              //    {console.log(arg, '<----test')}
+              //     {arg.event.extendedProps.isUrgent ?
+              //       'urgent event' :
+              //       'normal event'
+              //     }
+              //   </i>
+              // )}
+          
+              // eventMouseEnter= {(e) => {
+              //   console.log(e, 'suhdfsf');
+                
+                // element.popover({
+                //     animation:true,
+                //     delay: 300,
+                //     content: '<b>Inicio</b>:'+event.start+"<b>Fin</b>:"+event.end,
+                //     trigger: 'hover'
+                // });
+              // }}
+              
+              />
         </div>
       </>
     )
