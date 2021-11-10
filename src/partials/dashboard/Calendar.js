@@ -7,6 +7,9 @@ import {useDispatch, useSelector} from "react-redux";
 import { Spinner, Tooltip } from 'react-bootstrap';
 import { loadTravelCalendar } from '../../appRedux/actions';
 import Loader from '../actions/spinner';
+import ReactTooltip from 'react-tooltip';
+import tippy from "tippy.js";
+import 'tippy.js/dist/tippy.css'; 
 
 const BigCalendar = () => {
 
@@ -88,6 +91,7 @@ const BigCalendar = () => {
     month: 10, 
     year: 2021
   });
+
   		
   useEffect(() => {
     dispatch(loadTravelCalendar(date));
@@ -124,7 +128,16 @@ const BigCalendar = () => {
   var prev =document.getElementsByClassName("fc-prev-button");
   var next =document.getElementsByClassName("fc-next-button");
   var monthyear = document.getElementsByClassName("fc-toolbar-title");
-  var calendarRef = React.createRef()
+  var calendarRef = React.createRef(
+    eventRender => function(info) {
+      var tooltip = new Tooltip(info.el, {
+        title: info.event.extendedProps.description,
+        placement: 'top',
+        trigger: 'hover',
+        container: 'body'
+      });
+    },
+  )
   var [month, setmonth] = useState([]);
   var [year, setyear] = useState([]);
 
@@ -174,14 +187,30 @@ const BigCalendar = () => {
   //   }  
   // }, [loading]);
 
-  const eventRender = (e) =>{
-    console.log(e)
+  const eventRender = (info) =>{
+    console.log('event render test')
     // var tooltip = new Tooltip(info.el, {
     //   title: info.event.extendedProps.description,
     //   placement: 'top',
     //   trigger: 'hover',
     //   container: 'body'
     // });
+  }
+
+  const handleEventPositioned = (info) => {
+    console.log('handle event positioned!!!')
+    info.el.setAttribute("data-tip","some text tip");
+     ReactTooltip.rebuild();
+   }
+
+   const eventMouseEnter = (mouseEnterInfo) => {
+    console.log(mouseEnterInfo,'mouse info')
+    tippy(mouseEnterInfo.el, {
+      content: mouseEnterInfo.event._def.title,
+      placement: "top-start",
+      // arrow: false,
+      // interactive: true,  
+    });
   }
 
 
@@ -197,6 +226,7 @@ const BigCalendar = () => {
         
         {travel.loading ? <Loader/> : '' }
         <FullCalendar
+          ref={calendarRef}
           plugins={[ dayGridPlugin, timeGridPlugin, interactionPlugin ]}
           headerToolbar={{
             left: "prev,next today",
@@ -221,7 +251,14 @@ const BigCalendar = () => {
           displayEventTime= {false}
           events={travelState}
           dateClick={(e) => openEvent(e)}
-          ref={calendarRef}/>
+          eventRender={
+            function(arg){
+              console.log('test')
+            }
+          }
+          eventPositioned={(e) => handleEventPositioned(e)}
+          eventMouseEnter={(e) => eventMouseEnter(e)}
+          />
         
 
         </div>

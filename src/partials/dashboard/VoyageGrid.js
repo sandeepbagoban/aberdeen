@@ -367,7 +367,6 @@ const columns =  [
           table_header="Voyage Table"
           row_render={rowcheck}
         /> */}
-{console.log('asdgasdad', travel.travels.loading)}
       <DataTable 
           title="Voyage" 
           columns={columns} 
