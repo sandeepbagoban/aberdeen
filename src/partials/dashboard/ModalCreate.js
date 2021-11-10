@@ -75,11 +75,9 @@ const ModalCreate = ({show,setvisiblechild,dataFromParent}) => {
   }
 
   const addTravelDate = (el) => {
-    console.log(localToUtc(new Date(el)),'elllll')
+    // console.log(localToUtc(new Date(el)),'elllll')
     const value = [...travelDetails];
-    console.log(value,'value::')
-    let exists = value.find(x => x.Date.isSame(localToUtc(new Date(el))));
-    console.log(exists,'date already exists!!!')
+    let exists = value.find(x => x.Date.format('YYYY-MM-DD') == (localToUtc(new Date(el),'day').format('YYYY-MM-DD') ));
     if (exists == undefined) {
       value.push({
         TravelEntryId: uuid(),
@@ -131,7 +129,7 @@ const ModalCreate = ({show,setvisiblechild,dataFromParent}) => {
 
 
   useEffect(() => {
-    console.log(dataFromParent,'data from parent!!!')
+    // console.log(dataFromParent,'data from parent!!!')
     const value = [...travelDetails];
     const finalvalue = [...finaltravelDetails];
     value.length = 0;
@@ -144,7 +142,6 @@ const ModalCreate = ({show,setvisiblechild,dataFromParent}) => {
           Description: x.Description,
         });
       });
-      console.log(value,'valllll')
       setTravelDetails(value);
       setFinalTravelDetails(value);
     }
@@ -170,11 +167,11 @@ const ModalCreate = ({show,setvisiblechild,dataFromParent}) => {
       "TravelEntries": travelDetails
   }
     if (dataFromParent == undefined){
-      console.log(value,'VALUE:::::')
+      // console.log(value,'VALUE:::::')
       dispatch(createTravel(value));
       clearTravelDetails();
     } else{
-      console.log(value,'VALUE:::::')
+      // console.log(value,'VALUE:::::')
      dispatch(updateTravel(value));
     }
 
