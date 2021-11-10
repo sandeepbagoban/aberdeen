@@ -91,6 +91,7 @@ const BigCalendar = () => {
     month: 10, 
     year: 2021
   });
+
   		
   useEffect(() => {
     dispatch(loadTravelCalendar(date));
@@ -127,7 +128,16 @@ const BigCalendar = () => {
   var prev =document.getElementsByClassName("fc-prev-button");
   var next =document.getElementsByClassName("fc-next-button");
   var monthyear = document.getElementsByClassName("fc-toolbar-title");
-  var calendarRef = React.createRef()
+  var calendarRef = React.createRef(
+    eventRender => function(info) {
+      var tooltip = new Tooltip(info.el, {
+        title: info.event.extendedProps.description,
+        placement: 'top',
+        trigger: 'hover',
+        container: 'body'
+      });
+    },
+  )
   var [month, setmonth] = useState([]);
   var [year, setyear] = useState([]);
 
