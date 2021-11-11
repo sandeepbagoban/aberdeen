@@ -31,11 +31,11 @@ function Dashboard() {
   })
 		
   useEffect(() => {
-    dispatch(loadTravel(page));
+    //dispatch(loadTravel(page));
     // dispatch(loadTravelCalendar(date));
   }, [dispatch]);
 
-  const {travel} = useSelector(travel => travel)
+  //const {travel} = useSelector(travel => travel)
   
   return (
     <div className="flex h-screen overflow-hidden">

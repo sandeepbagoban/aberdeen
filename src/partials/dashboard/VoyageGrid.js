@@ -69,6 +69,37 @@ const VoyageGrid = ({ props }) => {
     dispatch(loadEmployees());
     dispatch(loadCompanies());
   }, [dispatch]);
+
+  const [companyColor, setCompanyColor] = useState([
+    {
+      name: 'Aberdeen BXL',
+      color: '#e9a0e7',
+    },
+    {
+      name: 'Aberdeen PAR',
+      color: '#8bdcf38c',
+    },
+    {
+      name: 'Aberdeen MOK',
+      color: '#94f4be',
+    },
+    {
+      name: 'Aberdeen BKK',
+      color: '#ffbd8999',
+    },
+    {
+      name: 'Aberdeen HKK',
+      color: '#3f97ee94',
+    },
+    {
+      name: 'Aberdeen SGP',
+      color: '#a99af296',
+    },
+    {
+      name: 'Aberdeen CAS',
+      color: '#ffda7094',
+    }
+  ]);
   
 const columns =  [
   {
@@ -86,7 +117,15 @@ const columns =  [
   {
     key:"Company",
     name: "Company Name",
-    selector: row => row.Company.Name,
+    selector: row => {
+      var aberColor = '';
+      companyColor.map(color => {
+        if (row.Company.Name === color.name) {
+          aberColor = color.color;
+        } 
+      })
+      return <span class="com" style={{background:aberColor}}>{row.Company.Name}</span>
+    },
     sortable: true
   },
   {

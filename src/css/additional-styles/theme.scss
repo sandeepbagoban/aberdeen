@@ -109,6 +109,7 @@ span.btnremove {
   font-size: 10px;
   font-weight: 100!important;
   cursor: pointer;
+  margin-top: 2px;
 }
 
 a.fc-daygrid-more-link.fc-more-link {
@@ -205,12 +206,47 @@ nav.rdt_Pagination > div > svg > path {
 }
 
 .dot {
-  height: 25px;
-  width: 25px;
+  height: 15px;
+  width: 15px;
   background-color: #bbb;
   border-radius: 50%;
   display: inline-block;
 }
+
+.country_dot{
+  padding-bottom: 20px;
+}
+
+.red {
+  background-color: red;
+}
+
+.sphere {
+  // height: 15px;
+  // width: 15px;
+  // border-radius: 50%;
+  // text-align: center;
+  // vertical-align: middle;
+  // font-size: 500%;
+  // position: relative;
+  // box-shadow: inset -10px -10px 100px #000, 10px 10px 20px black, inset 0px 0px 10px black;
+  // display: inline-block;
+  // margin: 5%;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+}
+// .sphere::after {
+//   background-color: rgba(255, 255, 255, 0.3);
+//   content: '';
+//   height: 45%;
+//   width: 12%;
+//   position: absolute;
+//   top: 4%;
+//   left: 15%;
+//   border-radius: 50%;
+//   transform: rotate(40deg);
+// }
 
 .flex.justify-center.items-center.spinner_loader {
   position: absolute;
@@ -230,4 +266,30 @@ a.fc-col-header-cell-cushion {
   font-size: 15px;
   font-weight: 100;
   color: rgb(76, 73, 73)!important;
+}
+
+span.cu {
+  font-size: 8px;
+  //background: #46f592;
+  padding: 5px;
+  border-radius: 6px;
+  width: fit-content;
+  margin-right: 2px;
+}
+
+.button.fc-prev-button, .button.fc-next-button{
+  background: rgb(201, 191, 191) !important;
+  border: #ddd !important;
+  color: black !important;
+}
+
+.fc .fc-daygrid-day.fc-day-today{
+  background: #e2e8f085 !important;
+}
+
+.com {
+  padding: 5px;
+  border-radius: 6px;
+  width: fit-content;
+  margin-right: 2px;
 }
