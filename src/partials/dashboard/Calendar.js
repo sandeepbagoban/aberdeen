@@ -240,13 +240,12 @@ let newDate = new Date()
      ReactTooltip.rebuild();
    }
 
-   const eventMouseEnter = (mouseEnterInfo) => {
-    console.log(mouseEnterInfo,'mouse info')
+  const eventMouseEnter = mouseEnterInfo => {
     tippy(mouseEnterInfo.el, {
       content: mouseEnterInfo.event._def.title,
       placement: "top-start",
-      // arrow: false,
-      // interactive: true,  
+      arrow: false,
+      interactive: true,  
     });
   }
 
