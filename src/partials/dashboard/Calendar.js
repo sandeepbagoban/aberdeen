@@ -138,13 +138,15 @@ let newDate = new Date()
           } 
         })
         x.TravelEntries.map(y => {
+          console.log(y,'bagoooooooooo')
           value.push({
             date: y.Date,
             title: y.Description,
             color: aberColor,
             backgroundColor:  aberbgColor,
             countryColor: aberColor,
-            countryCode: aberCode
+            countryCode: aberCode,
+            travelId: y.TravelId
           });
         })
       });
@@ -244,10 +246,15 @@ let newDate = new Date()
     tippy(mouseEnterInfo.el, {
       content: mouseEnterInfo.event._def.title,
       placement: "top-start",
-      arrow: false,
+      arrow: true,
       interactive: true,  
     });
   }
+
+  const eventClick = e => {
+      console.log(e,'eeee')
+  }
+
 
 
   const eventDidMount= function(info) {
@@ -300,6 +307,7 @@ let newDate = new Date()
               dateClick={(e) => openEvent(e)}
               eventPositioned={(e) => handleEventPositioned(e)}
               eventMouseEnter={(e) => eventMouseEnter(e)}
+              eventClick={eventClick}
               />
           </Col>
           </Row>

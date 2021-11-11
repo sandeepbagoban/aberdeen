@@ -124,7 +124,7 @@ const columns =  [
           aberColor = color.color;
         } 
       })
-      return <span class="com" style={{background:aberColor}}>{row.Company.Name}</span>
+      return <div class="company"><span class="com" style={{background:aberColor}}>{row.Company.Name}</span></div>
     },
     sortable: true
   },
