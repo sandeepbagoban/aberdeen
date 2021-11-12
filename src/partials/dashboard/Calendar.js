@@ -288,7 +288,8 @@ let newDate = new Date()
         <Container>
           <Row>
           <Col md={2}>
-            <Row className="country_dot"><h3>Countries</h3></Row>
+            <div class="col_country">
+            <Row className="country_dot"><h3 className="country_title">Countries</h3></Row>
             <Row className="country_dot"><div><span class="cu" style={{background:"#e9a0e7"}}>BXL</span>  Bruxelles</div></Row>
             <Row className="country_dot"><div><span class="cu" style={{background:"#c1f1ff"}}>PAR</span>  Paris</div></Row>
             <Row className="country_dot"><div><span class="cu" style={{background:"#94f4be"}}>MOK</span>  Moka</div></Row>
@@ -296,6 +297,7 @@ let newDate = new Date()
             <Row className="country_dot"><div><span class="cu" style={{background:"#3F97EE"}}>HKK</span>  Hongkong</div></Row>
             <Row className="country_dot"><div><span class="cu" style={{background:"#A99AF2"}}>SGP</span>  Singapore</div></Row>
             <Row className="country_dot"><div><span class="cu" style={{background:"#FFDA70"}}>CAS</span>  Casablanca</div></Row>
+            </div>
             </Col>
           <Col md={10}>
             {/* {travel.loading ? <Loader/> : '' } */}
@@ -303,9 +305,9 @@ let newDate = new Date()
               ref={calendarRef}
               plugins={[ dayGridPlugin, timeGridPlugin, interactionPlugin ]}
               headerToolbar={{
-                left: "prev,next today",
+                right: "prev,next today",
                 center: "title",
-                right: 'dayGridMonth'        
+                left: 'dayGridMonth'        
               }}
               
               initialView="dayGridMonth"
