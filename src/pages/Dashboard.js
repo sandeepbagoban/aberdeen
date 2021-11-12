@@ -35,6 +35,14 @@ function Dashboard() {
     // dispatch(loadTravelCalendar(date));
   }, [dispatch]);
 
+  const [visiblechild, setvisiblechild] = useState(false);
+  const [dataFromParent, setdatafromparent] = useState();
+
+  const handleVisible = (e, row) => {
+    setvisiblechild(true);
+    setdatafromparent(undefined);
+  }
+
   //const {travel} = useSelector(travel => travel)
   
   return (
@@ -57,6 +65,18 @@ function Dashboard() {
             <div className="sm:flex sm:justify-end sm:items-center mb-8">
               {/* Right: Actions */}
               <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
+
+                
+            <button
+              className="btn bg-red-500 hover:bg-red-600 text-white"
+              aria-controls="search-modal"
+              onClick={handleVisible}
+              >
+              <span className="hidden xs:block ml-2">Add Travelling</span>
+            </button> 
+            <ModalCreate show={visiblechild} setvisiblechild={setvisiblechild} dataFromParent={dataFromParent}></ModalCreate>
+
+
                 {/* Filter button */}
                 <FilterButton 
                   showHideCalendarState={showHideCalendarState} 
