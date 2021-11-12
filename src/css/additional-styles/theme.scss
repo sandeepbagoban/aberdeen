@@ -294,7 +294,14 @@ span.cu {
   margin-right: 2px;
 }
 
+.test {
+  padding: 5px;
+}
+
 .company {
-  padding: 2px;
-  border-radius: 20px;
+  border: 4px;
+  border-style: solid;
+  //border-color: rgb(233, 160, 231);
+  // padding: 1px;
+  border-radius: 6px;
 }

@@ -11,6 +11,7 @@ import ReactTooltip from 'react-tooltip';
 import tippy from "tippy.js";
 import 'tippy.js/dist/tippy.css'; 
 import { Col, Row,Container } from "react-bootstrap";
+import ModalVoyageDetails from './ModalVoyageDetails';
 
 const BigCalendar = () => {
 
@@ -31,7 +32,7 @@ const BigCalendar = () => {
       name: 'Aberdeen PAR',
       code: 'PAR',
       color: '#8bdcf38c',
-      background:  '#8bdcf38c'
+      background:  '#8bdcf354'
     },
     {
       name: 'Aberdeen MOK',
@@ -43,25 +44,25 @@ const BigCalendar = () => {
       name: 'Aberdeen BKK',
       code: 'BKK',
       color: '#ffbd8999',
-      background:  '#ffbd8999'
+      background:  '#ffbd894f'
     },
     {
       name: 'Aberdeen HKK',
       code: 'HKK',
       color: '#3f97ee94',
-      background:  '#3f97ee94'
+      background:  '#90c3f5b0'
     },
     {
       name: 'Aberdeen SGP',
       code: 'SGP',
       color: '#a99af296',
-      background:  '#a99af296'
+      background:  '#a99af252'
     },
     {
       name: 'Aberdeen CAS',
       code: 'CAS',
       color: '#ffda7094',
-      background:  '#ffda7094'
+      background:  '#ffeaac8c'
     }
   ]);
 
@@ -141,12 +142,12 @@ let newDate = new Date()
           console.log(y,'bagoooooooooo')
           value.push({
             date: y.Date,
-            title: y.Description,
+            title: x.Employee.Name,
             color: aberColor,
             backgroundColor:  aberbgColor,
             countryColor: aberColor,
             countryCode: aberCode,
-            travelId: y.TravelId
+            travel: x
           });
         })
       });
@@ -160,6 +161,7 @@ let newDate = new Date()
 
   var prev =document.getElementsByClassName("fc-prev-button");
   var next =document.getElementsByClassName("fc-next-button");
+  var today =document.getElementsByClassName("fc-today-button");
   var monthyear = document.getElementsByClassName("fc-toolbar-title");
   var calendarRef = React.createRef();
   var [month, setmonth] = useState([]);
@@ -170,6 +172,14 @@ let newDate = new Date()
     month = newDate.getMonth() + 1;
     year = newDate.getFullYear();
   }, [dispatch]);
+
+  if (today.length > 0){
+    today[0].addEventListener('click', function() {
+      console.log('today')
+      setyear(newDate.getFullYear())
+      setmonth(newDate.getMonth() + 1)
+    });
+  }
 
   if (prev.length > 0){
     prev[0].addEventListener('click', function() {
@@ -252,7 +262,7 @@ let newDate = new Date()
   }
 
   const eventClick = e => {
-      console.log(e,'eeee')
+      showTravelDetails(e.event._def.extendedProps.travel)
   }
 
 
@@ -261,6 +271,16 @@ let newDate = new Date()
     console.log(info.event._def,'info')
     info.el.querySelector('.fc-event-title').innerHTML = "<span class='cu' style=background:"+ info.event._def.extendedProps.countryColor +">" +info.event._def.extendedProps.countryCode+"</span>" + info.event.title;
   }
+
+  const [visiblechilddetails, setvisiblechilddetails] = useState(false);
+  const [dataFromParentdetails, setdatafromparentdetails] = useState();
+
+
+  const showTravelDetails = (row) => {
+    setvisiblechilddetails(true);
+    setdatafromparentdetails(row);
+  }
+
 
     return (
       <>
@@ -291,6 +311,7 @@ let newDate = new Date()
               initialView="dayGridMonth"
               weekends={true}
               eventBackgroundColor = {travelState.map(x => x.color)}
+              eventBorderColor = {travelState.map(x => x.color)}
               eventDisplay="block"
               eventTextColor="black"
               //eventRender={eventRender}
@@ -313,7 +334,7 @@ let newDate = new Date()
           </Row>
         </Container>
         
-
+        <ModalVoyageDetails show={visiblechilddetails} setvisiblechild={setvisiblechilddetails} dataFromParent={dataFromParentdetails}></ModalVoyageDetails>
 
         </div>
       </>

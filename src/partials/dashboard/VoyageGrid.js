@@ -7,6 +7,7 @@ import { Col, Row, Container, Button, Form, Spinner } from "react-bootstrap";
 import "react-datepicker/dist/react-datepicker.css";
 import Dialog from 'react-bootstrap-dialog';
 import ModalCreate from './ModalCreate';
+import ModalVoyageDetails from './ModalVoyageDetails';
 import DataTable, { createTheme } from 'react-data-table-component';
 
 const VoyageGrid = ({ props }) => {
@@ -74,30 +75,37 @@ const VoyageGrid = ({ props }) => {
     {
       name: 'Aberdeen BXL',
       color: '#e9a0e7',
+      background:  '#e9a0e773'
     },
     {
       name: 'Aberdeen PAR',
       color: '#8bdcf38c',
+      background:  '#8bdcf354'
     },
     {
       name: 'Aberdeen MOK',
       color: '#94f4be',
+      background:  '#94f4be73'
     },
     {
       name: 'Aberdeen BKK',
       color: '#ffbd8999',
+      background:  '#ffbd894f'
     },
     {
       name: 'Aberdeen HKK',
       color: '#3f97ee94',
+      background:  '#90c3f5b0'
     },
     {
       name: 'Aberdeen SGP',
       color: '#a99af296',
+      background:  '#a99af252'
     },
     {
       name: 'Aberdeen CAS',
       color: '#ffda7094',
+      background:  '#ffeaac8c'
     }
   ]);
   
@@ -121,10 +129,10 @@ const columns =  [
       var aberColor = '';
       companyColor.map(color => {
         if (row.Company.Name === color.name) {
-          aberColor = color.color;
+          aberColor = color.background;
         } 
       })
-      return <div class="company"><span class="com" style={{background:aberColor}}>{row.Company.Name}</span></div>
+      return <div style={{borderColor:aberColor}} class="company"><span class="test" style={{background:aberColor}}>{row.Company.Name}</span></div>
     },
     sortable: true
   },
@@ -152,7 +160,7 @@ const columns =  [
     name: "Action",
     cell: row => 
     <>
-    <button className="btn-viewmore btn bg-white border-gray-200 hover:border-red-300 text-gray-500 hover:text-gray-600" aria-haspopup="true" onClick={(e) => console.log(e)}>
+    <button className="btn-viewmore btn bg-white border-gray-200 hover:border-red-300 text-gray-500 hover:text-gray-600" aria-haspopup="true" onClick={e => showTravelDetails(e,row)}>
     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
@@ -202,52 +210,52 @@ const columns =  [
   //   //rows: travel.travels.Items
   // });
 
-  const rowcheck = (row, column, display_value) => {
-    if (column.field === "action") {
-      return (
-        <>
-          <button className="btn-viewmore btn bg-white border-gray-200 hover:border-red-300 text-gray-500 hover:text-gray-600" aria-haspopup="true" onClick={(e) => console.log(e)}>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-            </svg>
-          </button>
+  // const rowcheck = (row, column, display_value) => {
+  //   if (column.field === "action") {
+  //     return (
+  //       <>
+  //         <button className="btn-viewmore btn bg-white border-gray-200 hover:border-red-300 text-gray-500 hover:text-gray-600" aria-haspopup="true" onClick={(e) => console.log(e)}>
+  //           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  //             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+  //             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+  //           </svg>
+  //         </button>
 
-          <button
-            className="btn-viewmore btn bg-white border-gray-200 hover:border-red-300 text-gray-500 hover:text-gray-600"
-            aria-haspopup="true"
-            onClick={e => delete_Travel(e,row)}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg"
-             width="16" height="20" fill="currentColor"
-             class="bi bi-trash" viewBox="0 0 16 16">
-              <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-              <path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-            </svg>
-          </button>
+  //         <button
+  //           className="btn-viewmore btn bg-white border-gray-200 hover:border-red-300 text-gray-500 hover:text-gray-600"
+  //           aria-haspopup="true"
+  //           onClick={e => delete_Travel(e,row)}
+  //         >
+  //           <svg xmlns="http://www.w3.org/2000/svg"
+  //            width="16" height="20" fill="currentColor"
+  //            class="bi bi-trash" viewBox="0 0 16 16">
+  //             <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+  //             <path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+  //           </svg>
+  //         </button>
 
-          <button
-            className="btn-viewmore btn bg-white border-gray-200 hover:border-red-300 text-gray-500 hover:text-gray-600"
-            aria-haspopup="true"
-            onClick={e => update_Travel(e,row)}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg"
-             width="16" height="20" fill="currentColor"
-             class="bi bi-pencil-square" viewBox="0 0 16 16">
-              <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-              <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-            </svg>
-          </button>
+  //         <button
+  //           className="btn-viewmore btn bg-white border-gray-200 hover:border-red-300 text-gray-500 hover:text-gray-600"
+  //           aria-haspopup="true"
+  //           onClick={e => update_Travel(e,row)}
+  //         >
+  //           <svg xmlns="http://www.w3.org/2000/svg"
+  //            width="16" height="20" fill="currentColor"
+  //            class="bi bi-pencil-square" viewBox="0 0 16 16">
+  //             <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+  //             <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+  //           </svg>
+  //         </button>
 
-        </>
-      );
-    }
-    if (column.field === "startDate" || column.field === "endDate"){
-      display_value = formatDate(display_value)
-    }
+  //       </>
+  //     );
+  //   }
+  //   if (column.field === "startDate" || column.field === "endDate"){
+  //     display_value = formatDate(display_value)
+  //   }
 
-    return display_value;
-  };
+  //   return display_value;
+  // };
 
   const onChange = (value,name) => {
     if (name.toString() === 'company'){
@@ -311,6 +319,15 @@ const columns =  [
   const update_Travel = (e, row) => {
     setvisiblechild(true);
     setdatafromparent(row);
+  }
+
+  const [visiblechilddetails, setvisiblechilddetails] = useState(false);
+  const [dataFromParentdetails, setdatafromparentdetails] = useState();
+
+
+  const showTravelDetails = (e, row) => {
+    setvisiblechilddetails(true);
+    setdatafromparentdetails(row);
   }
 
   const handleTableChange = (_page, totalRows) => {
@@ -430,6 +447,7 @@ const columns =  [
         
         <Dialog ref={(el) => { dialog = el }} />
         <ModalCreate show={visiblechild} setvisiblechild={setvisiblechild} dataFromParent={dataFromParent}></ModalCreate>
+        <ModalVoyageDetails show={visiblechilddetails} setvisiblechild={setvisiblechilddetails} dataFromParent={dataFromParentdetails}></ModalVoyageDetails>
       </div>
     </>
   );

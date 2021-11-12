@@ -129,11 +129,13 @@ const ModalCreate = ({show,setvisiblechild,dataFromParent}) => {
 
 
   useEffect(() => {
-    // console.log(dataFromParent,'data from parent!!!')
+    console.log(dataFromParent,'data from parent!!!')
     const value = [...travelDetails];
     const finalvalue = [...finaltravelDetails];
     value.length = 0;
     if (dataFromParent !== undefined && dataFromParent.TravelEntries !== null) {
+      setCompanyId(dataFromParent.Company.CompanyId);
+      setPurposeState(dataFromParent.Purpose);
       dataFromParent.TravelEntries.forEach(x => {
         value.push({
           TravelEntryId: x.TravelEntryId,
@@ -154,6 +156,8 @@ const ModalCreate = ({show,setvisiblechild,dataFromParent}) => {
   })
 
   const handlerSubmitApi = () => {
+
+    console.log(companyId,'company Id is:::')
     let travelId = dataFromParent == undefined ? 0 : dataFromParent.TravelId;
     const value =  {
       "TravelId":travelId,
@@ -171,7 +175,7 @@ const ModalCreate = ({show,setvisiblechild,dataFromParent}) => {
       dispatch(createTravel(value));
       clearTravelDetails();
     } else{
-      // console.log(value,'VALUE:::::')
+     console.log(value,'VALUE:::::')
      dispatch(updateTravel(value));
     }
 
